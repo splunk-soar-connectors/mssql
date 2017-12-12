@@ -1,0 +1,505 @@
+{
+    "appid": "542e4e17-6276-46cf-98be-0f6b047bb58a",
+    "name": "Microsoft SQL Server",
+    "description": "This app supports several query actions against a Microsoft SQL Server",
+    "type": "information",
+    "product_vendor": "Microsoft",
+    "logo": "microsoftsqlserver.png",
+    "product_name": "Microsoft SQL Server",
+    "product_version_regex": ".*",
+    "publisher": "Phantom",
+    "license": "Copyright (c) Phantom Cyber Corporation, 2017",
+    "app_version": "1.0.0",
+    "utctime_updated": "2017-12-09T05:29:17.331725Z",
+    "package_name": "phantom_microsoftsqlserver",
+    "main_module": "microsoftsqlserver_connector.pyc",
+    "min_phantom_version": "3.0.251",
+    "app_wizard_version": "1.0.0",
+    "pip_dependencies": {
+        "wheel": [
+            {
+                "module": "pymssql",
+                "input_file": "pymssql/pymssql-2.1.3-cp27-cp27mu-manylinux1_x86_64.whl"
+            }
+        ]
+    },
+    "configuration": {
+        "host": {
+            "description": "Hostname or IP Address",
+            "data_type": "string",
+            "required": true,
+            "order": 0
+        },
+        "database": {
+            "description": "Database",
+            "data_type": "string",
+            "required": true,
+            "order": 1
+        },
+        "username": {
+            "description": "Username",
+            "data_type": "string",
+            "required": true,
+            "order": 2
+        },
+        "password": {
+            "description": "Password",
+            "data_type": "password",
+            "required": true,
+            "order": 3
+        }
+    },
+    "actions": [
+        {
+            "action": "test connectivity",
+            "identifier": "test_connectivity",
+            "description": "Validate the asset configuration for connectivity using supplied configuration",
+            "verbose": "",
+            "type": "test",
+            "read_only": true,
+            "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list columns",
+            "identifier": "list_columns",
+            "description": "List all the columns in a table",
+            "verbose": "",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "table_name": {
+                    "description": "Table Name",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "mssql table name"
+                    ],
+                    "order": 0
+                },
+                "table_schema": {
+                    "description": "Table Schema",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [
+                        "mssql table schema"
+                    ],
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.table_name",
+                    "data_type": "string",
+                    "contains": [
+                        "mssql table name"
+                    ],
+                    "example_values": [
+                        "TestTable"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.table_schema",
+                    "data_type": "string",
+                    "contains": [
+                        "mssql table schema"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.CHARACTER_MAXIMUM_LENGTH",
+                    "data_type": "numeric",
+                    "example_values": [
+                        10
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.CHARACTER_OCTET_LENGTH",
+                    "data_type": "numeric",
+                    "example_values": [
+                        10
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.CHARACTER_SET_CATALOG",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.CHARACTER_SET_NAME",
+                    "data_type": "string",
+                    "example_values": [
+                        "iso_1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.CHARACTER_SET_SCHEMA",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.COLLATION_CATALOG",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.COLLATION_NAME",
+                    "data_type": "string",
+                    "example_values": [
+                        "SQL_Latin1_General_CP1_CI_AS"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.COLLATION_SCHEMA",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.COLUMN_DEFAULT",
+                    "data_type": "string",
+                    "column_name": "Default Value",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.COLUMN_NAME",
+                    "data_type": "string",
+                    "example_values": [
+                        "col1"
+                    ],
+                    "column_name": "Column Name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.DATA_TYPE",
+                    "data_type": "string",
+                    "example_values": [
+                        "char"
+                    ],
+                    "column_name": "Data Type",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.DATETIME_PRECISION",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.DOMAIN_CATALOG",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.DOMAIN_NAME",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.DOMAIN_SCHEMA",
+                    "data_type": "string",
+                    "contains": [
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.IS_NULLABLE",
+                    "data_type": "string",
+                    "example_values": [
+                        "NO"
+                    ],
+                    "column_name": "Is Nullable",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.NUMERIC_PRECISION",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.NUMERIC_PRECISION_RADIX",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.NUMERIC_SCALE",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.ORDINAL_POSITION",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.TABLE_CATALOG",
+                    "data_type": "string",
+                    "example_values": [
+                        "testdb"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.TABLE_NAME",
+                    "data_type": "string",
+                    "example_values": [
+                        "TestTable"
+                    ],
+                    "contains": [
+                        "mssql table schema"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.TABLE_SCHEMA",
+                    "data_type": "string",
+                    "example_values": [
+                        "dbo"
+                    ],
+                    "contains": [
+                        "mssql table schema"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.num_columns",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully listed columns"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list tables",
+            "identifier": "list_tables",
+            "description": "List all the tables in the database",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "table_schema": {
+                    "description": "Table Schema",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [
+                        "mssql table schema"
+                    ],
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.table_schema",
+                    "data_type": "string",
+                    "contains": [
+                        "mssql table schema"
+                    ],
+                    "example_values": [
+                        "dbo"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.TABLE_CATALOG",
+                    "data_type": "string",
+                    "example_values": [
+                        "tempdb"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.TABLE_NAME",
+                    "data_type": "string",
+                    "example_values": [
+                        "TestTable"
+                    ],
+                    "contains": [
+                        "mssql table name"
+                    ],
+                    "column_name": "Table Name",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.TABLE_SCHEMA",
+                    "data_type": "string",
+                    "example_values": [
+                        "dbo"
+                    ],
+                    "contains": [
+                        "mssql table schema"
+                    ],
+                    "column_name": "Table Schema",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.TABLE_TYPE",
+                    "data_type": "string",
+                    "example_values": [
+                        "BASE TABLE"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.num_tables",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully listed tables"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "run query",
+            "identifier": "run_query",
+            "description": "Run a query against a table or tables in the database",
+            "verbose": "It is recommended to use the <b>format_vars</b> parameter when applicable. For example, if you wanted to find a specific IP, you could set <b>query</b> to a formatted string, like \"select * from my_hosts where ip = %s\" (note the use of %s), and set <b>format_vars</b> to the IP address. This will ensure the inputs are safely sanitized and avoid SQL injection attacks. Regardless of the type of input it's expecting, the only format specifier which should be used is %s.<br>Setting <b>no_commit</b> will make it so the App does not commit any changes made to the database (so you can ensure it's a read only query).",
+            "type": "investigate",
+            "read_only": false,
+            "parameters": {
+                "query": {
+                    "description": "Query string",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "sql query"
+                    ],
+                    "order": 0
+                },
+                "format_vars": {
+                    "description": "Comma separated list of variables",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "order": 1
+                },
+                "no_commit": {
+                    "description": "Do not commit changes to the Database",
+                    "data_type": "boolean",
+                    "required": false,
+                    "primary": false,
+                    "order": 2
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.format_vars",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.no_commit",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.query",
+                    "data_type": "string",
+                    "contains": [
+                        "sql query"
+                    ],
+                    "example_values": [
+                        "select * from dbo.TestTable"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.num_rows",
+                    "data_type": "numeric",
+                    "example_values": [
+                        6
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully ran query"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "view": "microsoftsqlserver_view.display_query_results"
+            },
+            "versions": "EQ(*)"
+        }
+    ]
+}
