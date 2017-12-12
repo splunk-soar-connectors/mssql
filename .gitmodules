@@ -1,0 +1,4 @@
+[submodule "pymssql"]
+	path = pymssql
+	url = ssh://git@prod-bb-1.phantom.local:7999/per/pymssql_wheel.git
+	ignore = dirty
