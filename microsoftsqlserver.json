@@ -1,7 +1,7 @@
 {
     "appid": "542e4e17-6276-46cf-98be-0f6b047bb58a",
     "name": "Microsoft SQL Server",
-    "description": "This app supports several query actions against a Microsoft SQL Server",
+    "description": "This app supports investigative actions against a Microsoft SQL Server",
     "type": "information",
     "product_vendor": "Microsoft",
     "logo": "microsoftsqlserver.png",
