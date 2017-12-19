@@ -4,7 +4,7 @@
     "description": "This app supports investigative actions against a Microsoft SQL Server",
     "type": "information",
     "product_vendor": "Microsoft",
-    "logo": "microsoftsqlserver.png",
+    "logo": "microsoftsqlserver.svg",
     "product_name": "Microsoft SQL Server",
     "product_version_regex": ".*",
     "publisher": "Phantom",
