@@ -264,7 +264,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
             )
             self._cursor = self._connection.cursor()
         except Exception as e:
-            return self._initialize_error("db login error", e)
+            return self._initialize_error("Error authenticating with database", e)
         self.save_progress("Database connection established")
         return phantom.APP_SUCCESS
 

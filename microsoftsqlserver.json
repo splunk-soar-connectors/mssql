@@ -83,7 +83,7 @@
                     "description": "Table Schema",
                     "data_type": "string",
                     "required": false,
-                    "primary": false,
+                    "primary": true,
                     "contains": [
                         "mssql table schema"
                     ],
@@ -305,7 +305,7 @@
                     "description": "Table Schema",
                     "data_type": "string",
                     "required": false,
-                    "primary": false,
+                    "primary": true,
                     "contains": [
                         "mssql table schema"
                     ],
