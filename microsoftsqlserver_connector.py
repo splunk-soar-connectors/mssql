@@ -22,6 +22,7 @@ from phantom.action_result import ActionResult
 import csv
 import json
 import pymssql
+import binascii
 from pymssql import OperationalError
 import requests
 
@@ -48,9 +49,25 @@ class MicrosoftSqlServerConnector(BaseConnector):
         return phantom.APP_ERROR
 
     def _get_query_results(self, action_result):
+
         try:
+
+            results = []
             columns = self._cursor.description
-            results = [{columns[index][0]: column for index, column in enumerate(value)} for value in self._cursor.fetchall()]
+
+            for value in self._cursor.fetchall():
+
+                column_dict = {}
+
+                for index, column in enumerate(value):
+
+                    if columns[index][1] == 2 and column is not None:
+                        column = '0x{0}'.format(binascii.hexlify(column).decode().upper())
+
+                    column_dict[columns[index][0]] = column
+
+                results.append(column_dict)
+
         except OperationalError:  # No rows in results
             return RetVal(phantom.APP_SUCCESS, [])
         except Exception as e:
