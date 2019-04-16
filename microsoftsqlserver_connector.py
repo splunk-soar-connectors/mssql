@@ -12,6 +12,9 @@
 #
 # --
 
+import sys, os
+sys.path = [ os.getcwd() + "/" + "dependencies" ] + sys.path
+
 # Phantom App imports
 import phantom.app as phantom
 from phantom.base_connector import BaseConnector
@@ -26,6 +29,7 @@ import binascii
 from pymssql import OperationalError
 import requests
 
+import datetime
 
 class RetVal(tuple):
     def __new__(cls, val1, val2=None):
@@ -63,6 +67,14 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
                     if columns[index][1] == 2 and column is not None:
                         column = '0x{0}'.format(binascii.hexlify(column).decode().upper())
+
+                    # convert dates to iso8601
+                    if self._datetime_to_iso8601 and isinstance(column, datetime.datetime):
+                        column = column.isoformat()
+
+                    # catchall for oddball column types
+                    if self._default_to_string and not (isinstance(column, basestring) or isinstance(column, int) or isinstance(column, float)):
+                        column = str(column)
 
                     column_dict[columns[index][0]] = column
 
@@ -213,6 +225,10 @@ class MicrosoftSqlServerConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully listed tables")
 
     def _handle_run_query(self, param):
+
+        self._default_to_string = param.get("default_to_string", False)
+        self._datetime_to_iso8601 = param.get("datetime_to_iso8601", False)
+
         action_result = self.add_action_result(ActionResult(dict(param)))
         query = param['query']
         format_vars = self._get_format_vars(param)
@@ -275,6 +291,9 @@ class MicrosoftSqlServerConnector(BaseConnector):
         password = config['password']
         database = config['database']
 
+        self._default_to_string = False
+        self._datetime_to_iso8601 = False
+
         try:
             self._connection = pymssql.connect(
                 host, username, password, database
@@ -296,7 +315,7 @@ if __name__ == '__main__':
     import pudb
     import argparse
 
-    pudb.set_trace()
+    #pudb.set_trace()
 
     argparser = argparse.ArgumentParser()
 
