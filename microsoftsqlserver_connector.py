@@ -54,31 +54,44 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
     def _get_query_results(self, action_result):
 
+        summary = { "num_datasets": 0 }
         try:
 
             results = []
-            columns = self._cursor.description
+            extra = {}
+            dataset = 0
+            while True:
+                
+                columns = self._cursor.description
+                table = self._cursor.fetchall()
+                for row in table:
 
-            for value in self._cursor.fetchall():
+                    column_dict = {}
+                    column_dict['_dataset'] = dataset
+                    results.append(column_dict)
+                    for index, column in enumerate(row):
 
-                column_dict = {}
+                        if columns[index][1] == 2 and column is not None:
+                            column = '0x{0}'.format(binascii.hexlify(column).decode().upper())
 
-                for index, column in enumerate(value):
+                        # convert dates to iso8601
+                        if self._datetime_to_iso8601 and isinstance(column, datetime.datetime):
+                            column = column.isoformat()
 
-                    if columns[index][1] == 2 and column is not None:
-                        column = '0x{0}'.format(binascii.hexlify(column).decode().upper())
+                        # catchall for oddball column types
+                        if self._default_to_string and not (isinstance(column, basestring) or isinstance(column, int) or isinstance(column, float)):
+                            column = str(column)
 
-                    # convert dates to iso8601
-                    if self._datetime_to_iso8601 and isinstance(column, datetime.datetime):
-                        column = column.isoformat()
+                        column_dict[columns[index][0]] = column
 
-                    # catchall for oddball column types
-                    if self._default_to_string and not (isinstance(column, basestring) or isinstance(column, int) or isinstance(column, float)):
-                        column = str(column)
+                summary["dataset:{}:rows".format(dataset)] = len(table)
+                summary["dataset:{}:columns".format(dataset)] = len(row)
+                extra['dataset:{}:format'.format(dataset)] = json.dumps(columns)
+                dataset += 1
+                summary["num_datasets"] = dataset
 
-                    column_dict[columns[index][0]] = column
-
-                results.append(column_dict)
+                if not self._cursor.nextset():
+                    break
 
         except OperationalError:  # No rows in results
             return RetVal(phantom.APP_SUCCESS, [])
@@ -88,6 +101,9 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 "Unable to retrieve results from query",
                 e
             ))
+
+        action_result.update_summary(summary)
+        action_result.add_extra_data(extra)
         return RetVal(phantom.APP_SUCCESS, results)
 
     def _check_for_valid_schema(self, action_result, schema):
