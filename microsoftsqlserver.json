@@ -445,6 +445,27 @@
                     "required": false,
                     "primary": false,
                     "order": 4
+                },
+                "add_dataset_identifier": {
+                    "description": "add dataset identifier to results",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "order": 5,
+		    "default": "only_if_multiple",
+		    "value_list": [
+		    	"only_if_multiple",
+			"always",
+			"never"
+		    ]
+                },
+                "dataset_identifier": {
+                    "description": "identifier in results denoting dataset",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "default": "__dataset",
+                    "order": 6
                 }
             },
             "output": [
@@ -473,6 +494,14 @@
                 },
                 {
                     "data_path": "action_result.parameter.default_to_string", 
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.add_dataset_identifier", 
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.dataset_identifier", 
                     "data_type": "string"
                 },
                 {

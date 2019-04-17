@@ -67,8 +67,11 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 for row in table:
 
                     column_dict = {}
-                    column_dict['_dataset'] = dataset
                     results.append(column_dict)
+
+                    if self._add_dataset_identifer:
+                        column_dict[self._dataset_identifier] = dataset
+
                     for index, column in enumerate(row):
 
                         if columns[index][1] == 2 and column is not None:
@@ -86,12 +89,18 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
                 summary["dataset:{}:rows".format(dataset)] = len(table)
                 summary["dataset:{}:columns".format(dataset)] = len(row)
-                extra['dataset:{}:format'.format(dataset)] = json.dumps(columns)
-                dataset += 1
-                summary["num_datasets"] = dataset
+                extra['dataset:{}:format'.format(dataset)] = columns
+                summary["num_datasets"] = dataset + 1
 
                 if not self._cursor.nextset():
                     break
+                else:
+                    dataset += 1
+
+            # can only identify multiple datasets after the fact
+            if self._add_dataset_identifer == "only_if_multiple" and dataset == 0:
+                for row in results:
+                    del row[self._dataset_identifier]
 
         except OperationalError:  # No rows in results
             return RetVal(phantom.APP_SUCCESS, [])
@@ -244,6 +253,10 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
         self._default_to_string = param.get("default_to_string", False)
         self._datetime_to_iso8601 = param.get("datetime_to_iso8601", False)
+        self._add_dataset_identifer = param.get("add_dataset_identifier", self._add_dataset_identifer)
+        if self._add_dataset_identifer == "never":
+            self._add_dataset_identifer = False
+        self._dataset_identifier = param.get("dataset_identifier", self._dataset_identifier)
 
         action_result = self.add_action_result(ActionResult(dict(param)))
         query = param['query']
@@ -309,6 +322,8 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
         self._default_to_string = False
         self._datetime_to_iso8601 = False
+        self._add_dataset_identifer = False
+        self._dataset_identifier = "__dataset"
 
         try:
             self._connection = pymssql.connect(
