@@ -10,7 +10,7 @@
     "product_version_regex": ".*",
     "publisher": "Phantom",
     "license": "Copyright (c) Phantom Cyber Corporation, 2017",
-    "app_version": "1.0.115",
+    "app_version": "1.0.116",
     "utctime_updated": "2018-12-20T02:53:09.000000Z",
     "package_name": "phantom_microsoftsqlserver",
     "main_module": "microsoftsqlserver_connector.pyc",
@@ -437,6 +437,7 @@
                     "data_type": "boolean",
                     "required": false,
                     "primary": false,
+                    "default": false,
                     "order": 3
                 },
                 "default_to_string": {
@@ -444,28 +445,16 @@
                     "data_type": "boolean",
                     "required": false,
                     "primary": false,
+                    "default": false,
                     "order": 4
                 },
-                "add_dataset_identifier": {
-                    "description": "add dataset identifier to results",
-                    "data_type": "string",
+                "add_datasets_as_rows": {
+                    "description": "run query will return each dataset as a separate row in the action result",
+                    "data_type": "boolean",
                     "required": false,
                     "primary": false,
-                    "order": 5,
-		    "default": "only_if_multiple",
-		    "value_list": [
-		    	"only_if_multiple",
-			"always",
-			"never"
-		    ]
-                },
-                "dataset_identifier": {
-                    "description": "identifier in results denoting dataset",
-                    "data_type": "string",
-                    "required": false,
-                    "primary": false,
-                    "default": "__dataset",
-                    "order": 6
+                    "default": false,
+                    "order": 5
                 }
             },
             "output": [
@@ -493,15 +482,11 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.parameter.default_to_string", 
+                    "data_path": "action_result.parameter.default_to_string",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.parameter.add_dataset_identifier", 
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.parameter.dataset_identifier", 
+                    "data_path": "action_result.parameter.add_datasets_as_rows",
                     "data_type": "string"
                 },
                 {

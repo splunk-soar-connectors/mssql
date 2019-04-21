@@ -52,68 +52,99 @@ class MicrosoftSqlServerConnector(BaseConnector):
             self.set_status(phantom.APP_ERROR, msg, exception)
         return phantom.APP_ERROR
 
+    # fix empty name values in description
+    def _remediate_description_names(self, description):
+    
+        description = [ list(r) for r in description ]
+        name = "__name_not_provided__"
+        for i, r in enumerate(description):
+            if not r[0]:
+                r[0] = name + str(i)
+        return(description)
+
+    def _remediate_dataset_value(self, dataset, description):
+
+        dataset = [ list(row) for row in dataset]
+        for row in dataset:
+            for i, value in enumerate(row):
+
+                col_name = description[i][0]
+                col_type = description[i][1]
+
+                if col_type == 2 and value != None:
+                    row[i] = '0x{0}'.format(binascii.hexlify(value).decode().upper())
+
+                # convert dates to iso8601
+                if self._datetime_to_iso8601 and isinstance(value, datetime.datetime):
+                    row[i] = value.isoformat()
+
+                # catchall for oddball column types
+                if self._default_to_string and not (isinstance(value, basestring) or isinstance(value, int) or isinstance(value, float)):
+                    row[i] = str(value)
+
+        return dataset
+
+    def _dataset_to_dict(self, dataset, description):
+
+        newdataset = []
+        for row in dataset:
+            dictrow = {}
+            newdataset += [dictrow]
+            for i, col in enumerate(row):
+                dictrow[description[i][0]] = col
+
+        # cooler to use list comprehension, but indecipherable
+        # {description[i][0]:col for row in dataset for i, col in enumerate(row)}
+        return(newdataset)
+
     def _get_query_results(self, action_result):
 
         summary = { "num_datasets": 0 }
+
+        dataset_results = {}
+        all_datasets = [ dataset_results ]
+        all_datasets = []
+
         try:
 
-            results = []
-            extra = {}
-            dataset = 0
+            num_dataset = 0
             while True:
-                
-                columns = self._cursor.description
-                table = self._cursor.fetchall()
-                for row in table:
 
-                    column_dict = {}
-                    results.append(column_dict)
+                # description property is from DB-API (PEP249)
+                description = self._cursor.description
+                description = self._remediate_description_names(description)
 
-                    if self._add_dataset_identifer:
-                        column_dict[self._dataset_identifier] = dataset
+                dataset = self._cursor.fetchall()
+                dataset = self._remediate_dataset_value(dataset, description)
+                dataset = self._dataset_to_dict(dataset, description)
+                all_datasets += [ {"dataset": dataset, "description": description } ]
 
-                    for index, column in enumerate(row):
-
-                        if columns[index][1] == 2 and column is not None:
-                            column = '0x{0}'.format(binascii.hexlify(column).decode().upper())
-
-                        # convert dates to iso8601
-                        if self._datetime_to_iso8601 and isinstance(column, datetime.datetime):
-                            column = column.isoformat()
-
-                        # catchall for oddball column types
-                        if self._default_to_string and not (isinstance(column, basestring) or isinstance(column, int) or isinstance(column, float)):
-                            column = str(column)
-
-                        column_dict[columns[index][0]] = column
-
-                summary["dataset:{}:rows".format(dataset)] = len(table)
-                summary["dataset:{}:columns".format(dataset)] = len(row)
-                extra['dataset:{}:format'.format(dataset)] = columns
-                summary["num_datasets"] = dataset + 1
+                summary["dataset:{}:rows".format(num_dataset)] = len(dataset)
+                summary["dataset:{}:columns".format(num_dataset)] = len(dataset[0])
+                num_dataset += 1
+                summary["num_datasets"] = num_dataset
 
                 if not self._cursor.nextset():
                     break
-                else:
-                    dataset += 1
-
-            # can only identify multiple datasets after the fact
-            if self._add_dataset_identifer == "only_if_multiple" and dataset == 0:
-                for row in results:
-                    del row[self._dataset_identifier]
 
         except OperationalError:  # No rows in results
             return RetVal(phantom.APP_SUCCESS, [])
+
         except Exception as e:
-            return RetVal(action_result.set_status(
-                phantom.APP_ERROR,
-                "Unable to retrieve results from query",
-                e
-            ))
+            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to retrieve results from query", e))
 
         action_result.update_summary(summary)
-        action_result.add_extra_data(extra)
-        return RetVal(phantom.APP_SUCCESS, results)
+
+        if self._add_datasets_as_rows:
+            return RetVal(phantom.APP_SUCCESS, all_datasets)
+
+        else:
+            # flatten the datasets to a single list of dictionaries
+            results = []
+            for d in all_datasets:
+                for r in d['dataset']:
+                    results += [r]
+            return RetVal(phantom.APP_SUCCESS, results)
 
     def _check_for_valid_schema(self, action_result, schema):
         format_vars = (schema,)
@@ -253,10 +284,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
         self._default_to_string = param.get("default_to_string", False)
         self._datetime_to_iso8601 = param.get("datetime_to_iso8601", False)
-        self._add_dataset_identifer = param.get("add_dataset_identifier", self._add_dataset_identifer)
-        if self._add_dataset_identifer == "never":
-            self._add_dataset_identifer = False
-        self._dataset_identifier = param.get("dataset_identifier", self._dataset_identifier)
+        self._add_datasets_as_rows = param.get("add_datasets_as_rows", self._add_datasets_as_rows)
 
         action_result = self.add_action_result(ActionResult(dict(param)))
         query = param['query']
@@ -322,8 +350,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
         self._default_to_string = False
         self._datetime_to_iso8601 = False
-        self._add_dataset_identifer = False
-        self._dataset_identifier = "__dataset"
+        self._add_datasets_as_rows = False
 
         try:
             self._connection = pymssql.connect(
