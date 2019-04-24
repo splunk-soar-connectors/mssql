@@ -97,6 +97,17 @@ class MicrosoftSqlServerConnector(BaseConnector):
         # {description[i][0]:col for row in dataset for i, col in enumerate(row)}
         return(newdataset)
 
+    __description_labels = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
+    def _description_to_dict(self, description):
+
+        ret = dict()
+        for col in description:
+            ret[col[0]] = newcol = dict()
+            for i, field in enumerate(col):
+                if i and field:
+                    newcol[self.__description_labels[i]] = field
+        return ret
+            
     def _get_query_results(self, action_result):
 
         summary = { "num_datasets": 0 }
@@ -117,6 +128,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 dataset = self._cursor.fetchall()
                 dataset = self._remediate_dataset_value(dataset, description)
                 dataset = self._dataset_to_dict(dataset, description)
+                description = self._description_to_dict(description)
                 all_datasets += [ {"dataset": dataset, "description": description } ]
 
                 summary["dataset:{}:rows".format(num_dataset)] = len(dataset)

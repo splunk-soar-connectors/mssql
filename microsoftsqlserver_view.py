@@ -17,55 +17,87 @@ import json
 
 
 def display_query_results(provides, all_results, context):
-
-    headers = []
-
-    headers_set = set()
+    context['results'] = results = []
     for summary, action_results in all_results:
         for result in action_results:
-            header_data = result.get_data()
 
-    if header_data:
-        for h in header_data:
-            headers_set.update(h.keys())
+            ctx_result = {}
+            ctx_result['param'] = result.get_param()
 
-    if not headers_set:
-        headers_set.update(headers)
-    headers = sorted(headers_set)
+            add_datasets_as_rows = ctx_result['param'].get('add_datasets_as_rows', False)
+            ctx_result['add_datasets_as_rows'] = add_datasets_as_rows
+            ctx_result['description_headers'] = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
 
-    context['ajax'] = True
-    if 'start' not in context['QS']:
-        context['headers'] = headers
-        return '/widgets/generic_table.html'
+            data = reformat_data(result.get_data(), ctx_result['description_headers'], add_datasets_as_rows)
+            
+            if (data):
+                ctx_result['data'] = data
 
-    adjusted_names = {}
+            summary = result.get_summary()
+            if (summary):
+                ctx_result['summary'] = summary
 
-    start = int(context['QS']['start'][0])
-    length = int(context['QS'].get('length', ['5'])[0])
-    end = start + length
-    cur_pos = 0
-    rows = []
-    total = 0
-    for summary, action_results in all_results:
-        for result in action_results:
-            data = result.get_data()
-            total += len(data)
-            for item in data:
-                cur_pos += 1
-                if (cur_pos - 1) < start:
-                    continue
-                if (cur_pos - 1) >= end:
-                    break
-                row = []
+            results.append(ctx_result)
 
-                for h in headers:
-                    row.append({ 'value': item.get(adjusted_names.get(h, h)) })
-                rows.append(row)
+    return "run_query.html"
 
-    content = {
-        "data": rows,
-        "recordsTotal": total,
-        "recordsFiltered": total,
-    }
+def reformat_data(data, description_headers, add_datasets_as_rows):
 
-    return HttpResponse(json.dumps(content), content_type='text/javascript')
+    ret = []
+
+    if add_datasets_as_rows:
+
+        for index, dataset in enumerate(data):
+
+            newdataset = {}
+            ret += [newdataset]
+            newdataset['index'] = index
+            newdataset['headers'] = sorted(dataset['dataset'][0].keys())
+            newdataset['dataset'] = []
+
+            for row in dataset['dataset']:
+
+                newrow = []
+                newdataset['dataset'] += [newrow]
+
+                for col in newdataset['headers']:
+                    newrow += [row[col]]
+
+            newdataset['description'] = []
+            for name in sorted(dataset['description'].keys()):
+
+                newrow = []
+                newdataset['description'] += [newrow]
+                newrow += [name]
+
+                for i, col in enumerate(description_headers):
+                    if i:
+                        newrow += [dataset['description'][name].get(col, "")]
+
+            newdataset['dump'] = json.dumps(newdataset)
+
+    else:
+
+        index = 0
+        headers = []
+
+        for i, row in enumerate(data):
+
+            newheaders = sorted(row.keys())
+            if set(headers) != set(newheaders):
+                headers = newheaders
+                newdataset = {}
+                ret += [newdataset]
+                newdataset['index'] = index
+                index += 1
+                newdataset['headers'] = sorted(row.keys())
+                newdataset['dataset'] = []
+
+            newrow = []
+            newdataset['dataset'] += [newrow]
+            for col in headers:
+                newrow += [row[col]]
+
+            newdataset['dump'] = json.dumps(newdataset)
+
+    return ret
