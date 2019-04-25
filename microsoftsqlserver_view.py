@@ -1,6 +1,4 @@
 # --
-# File: microsoftsqlserver_view.py
-#
 # Copyright (c) Phantom Cyber Corporation, 2017
 #
 # This unpublished material is proprietary to Phantom Cyber.
@@ -25,13 +23,16 @@ def display_query_results(provides, all_results, context):
             ctx_result['param'] = result.get_param()
 
             add_datasets_as_rows = ctx_result['param'].get('add_datasets_as_rows', False)
-            ctx_result['add_datasets_as_rows'] = add_datasets_as_rows
-            ctx_result['description_headers'] = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
+            #ctx_result['add_datasets_as_rows'] = add_datasets_as_rows
+            #ctx_result['description_headers'] = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
 
-            data = reformat_data(result.get_data(), ctx_result['description_headers'], add_datasets_as_rows)
+            data = reformat_data(result.get_data(), ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"], add_datasets_as_rows)
             
             if (data):
-                ctx_result['data'] = data
+                ctx_result['tables'] = data
+
+            #ctx_result['headers'] = data[0]['headers']
+            #ctx_result['rows'] = data[0]['rows']
 
             summary = result.get_summary()
             if (summary):
@@ -100,4 +101,26 @@ def reformat_data(data, description_headers, add_datasets_as_rows):
 
             newdataset['dump'] = json.dumps(newdataset)
 
-    return ret
+    newret = []
+    for i, dataset in enumerate(ret):
+
+        if 'description' in dataset:
+            newdataset = {}
+            newret += [newdataset]
+            newdataset['name'] = "Description for Dataset #" + str(i)
+            newdataset['headers'] = description_headers
+            newdataset['rows'] = dataset['description']
+            for r, row in enumerate(newdataset['rows']):
+                for c, cell in enumerate(row):
+                    newdataset['rows'][r][c] = { "value": cell }
+
+        newdataset = {}
+        newret += [newdataset]
+        newdataset['name'] = "Dataset #" + str(i)
+        newdataset['headers'] = dataset['headers']
+        newdataset['rows'] = dataset['dataset']
+        for r, row in enumerate(newdataset['rows']):
+            for c, cell in enumerate(row):
+                newdataset['rows'][r][c] = { "value": cell }
+
+    return newret
