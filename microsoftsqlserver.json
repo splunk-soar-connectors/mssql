@@ -8,13 +8,13 @@
     "logo_dark": "microsoftsqlserver_dark.svg",
     "product_name": "Microsoft SQL Server",
     "product_version_regex": ".*",
-    "publisher": "Phantom",
-    "license": "Copyright (c) Phantom Cyber Corporation, 2017",
+    "publisher": "Splunk",
+    "license": "Copyright (c) 2017-2019 Splunk Inc.",
     "app_version": "1.0.10",
     "utctime_updated": "2018-12-20T02:53:09.000000Z",
     "package_name": "phantom_microsoftsqlserver",
     "main_module": "microsoftsqlserver_connector.pyc",
-    "min_phantom_version": "3.0.251",
+    "min_phantom_version": "4.0.1068",
     "app_wizard_version": "1.0.0",
     "pip_dependencies": {
         "wheel": [
