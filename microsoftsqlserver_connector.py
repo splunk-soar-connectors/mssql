@@ -1,16 +1,8 @@
-# --
 # File: microsoftsqlserver_connector.py
+# Copyright (c) 2017-2019 Splunk Inc.
 #
-# Copyright (c) Phantom Cyber Corporation, 2017
-#
-# This unpublished material is proprietary to Phantom Cyber.
-# All rights reserved. The methods and
-# techniques described herein are considered trade secrets
-# and/or confidential. Reproduction or distribution, in whole
-# or in part, is forbidden except by express written permission
-# of Phantom Cyber.
-#
-# --
+# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+# without a valid written license from Splunk Inc. is PROHIBITED.
 
 # Phantom App imports
 import phantom.app as phantom
@@ -25,6 +17,7 @@ import pymssql
 import binascii
 from pymssql import OperationalError
 import requests
+import datetime
 
 
 class RetVal(tuple):
@@ -237,7 +230,11 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 )
 
         for row in results:
-            action_result.add_data(row)
+            for i in row:
+                if isinstance(row[i], datetime.datetime):
+                    action_result.add_data({ i: str(row[i]) })
+                else:
+                    action_result.add_data(row)
 
         summary = action_result.update_summary({})
         summary['num_rows'] = len(results)
