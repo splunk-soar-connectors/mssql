@@ -441,11 +441,11 @@
                     "order": 3
                 },
                 "default_to_string": {
-                    "description": "Convert and non-standard column types to string; ie. datetime",
+                    "description": "Convert any non-standard column types to string; ie. datetime",
                     "data_type": "boolean",
                     "required": false,
                     "primary": false,
-                    "default": false,
+                    "default": true,
                     "order": 4
                 },
                 "add_datasets_as_rows": {

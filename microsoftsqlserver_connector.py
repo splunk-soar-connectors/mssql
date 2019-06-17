@@ -1,19 +1,11 @@
-# --
 # File: microsoftsqlserver_connector.py
+# Copyright (c) 2017-2019 Splunk Inc.
 #
-# Copyright (c) Phantom Cyber Corporation, 2017
-#
-# This unpublished material is proprietary to Phantom Cyber.
-# All rights reserved. The methods and
-# techniques described herein are considered trade secrets
-# and/or confidential. Reproduction or distribution, in whole
-# or in part, is forbidden except by express written permission
-# of Phantom Cyber.
-#
-# --
+# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+# without a valid written license from Splunk Inc. is PROHIBITED.
 
 import sys, os
-sys.path = [ os.getcwd() + "/" + "dependencies" ] + sys.path
+#sys.path = [ os.getcwd() + "/" + "dependencies" ] + sys.path
 
 # Phantom App imports
 import phantom.app as phantom
@@ -28,7 +20,6 @@ import pymssql
 import binascii
 from pymssql import OperationalError
 import requests
-
 import datetime
 
 class RetVal(tuple):
@@ -385,7 +376,7 @@ if __name__ == '__main__':
     import pudb
     import argparse
 
-    #pudb.set_trace()
+    pudb.set_trace()
 
     argparser = argparse.ArgumentParser()
 
