@@ -10,7 +10,7 @@
     "product_version_regex": ".*",
     "publisher": "Phantom",
     "license": "Copyright (c) Phantom Cyber Corporation, 2017",
-    "app_version": "1.0.116",
+    "app_version": "1.0.117",
     "utctime_updated": "2018-12-20T02:53:09.000000Z",
     "package_name": "phantom_microsoftsqlserver",
     "main_module": "microsoftsqlserver_connector.pyc",
@@ -490,7 +490,11 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*",
+                    "data_path": "action_result.data.*.dataset",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.description",
                     "data_type": "string"
                 },
                 {
@@ -502,6 +506,10 @@
                     "example_values": [
                         "select * from dbo.TestTable"
                     ]
+                },
+                {
+                    "data_path": "action_result.summary.num_datasets",
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.summary.num_rows",
