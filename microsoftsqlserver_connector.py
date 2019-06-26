@@ -104,7 +104,6 @@ class MicrosoftSqlServerConnector(BaseConnector):
         summary = { "num_datasets": 0 }
 
         dataset_results = {}
-        all_datasets = [ dataset_results ]
         all_datasets = []
 
         try:
