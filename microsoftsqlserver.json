@@ -449,7 +449,7 @@
                     "order": 4
                 },
                 "add_datasets_as_rows": {
-                    "description": "run query will return each dataset as a separate row in the action result",
+                    "description": "Run query will return each dataset as a separate row in the action result",
                     "data_type": "boolean",
                     "required": false,
                     "primary": false,
