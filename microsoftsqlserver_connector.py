@@ -1,10 +1,10 @@
 # File: microsoftsqlserver_connector.py
-# Copyright (c) 2018-2019 Splunk Inc.
+# Copyright (c) 2017-2019 Splunk Inc.
 #
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
 
-import sys, os
+#import sys, os
 #sys.path = [ os.getcwd() + "/" + "dependencies" ] + sys.path
 
 # Phantom App imports
@@ -122,7 +122,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 all_datasets += [ {"dataset": dataset, "description": description } ]
 
                 summary["dataset:{}:rows".format(num_dataset)] = len(dataset)
-                summary["dataset:{}:columns".format(num_dataset)] = len(dataset[0])
+                summary["dataset:{}:columns".format(num_dataset)] = len(dataset[0]) if len(dataset) > 0 else 0
                 num_dataset += 1
                 summary["num_datasets"] = num_dataset
 
