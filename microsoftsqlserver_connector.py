@@ -41,35 +41,110 @@ class MicrosoftSqlServerConnector(BaseConnector):
             self.set_status(phantom.APP_ERROR, msg, exception)
         return phantom.APP_ERROR
 
+    # fix empty name values in description
+    def _remediate_description_names(self, description):
+    
+        description = [ list(r) for r in description ]
+        name = "__name_not_provided__"
+        for i, r in enumerate(description):
+            if not r[0]:
+                r[0] = name + str(i)
+        return(description)
+
+    def _remediate_dataset_value(self, dataset, description):
+
+        dataset = [ list(row) for row in dataset]
+        for row in dataset:
+            for i, value in enumerate(row):
+
+                col_name = description[i][0]
+                col_type = description[i][1]
+
+                if col_type == 2 and value != None:
+                    row[i] = '0x{0}'.format(binascii.hexlify(value).decode().upper())
+
+                # convert dates to iso8601
+                if self._datetime_to_iso8601 and isinstance(value, datetime.datetime):
+                    row[i] = value.isoformat()
+
+                # catchall for oddball column types
+                if self._default_to_string and not (isinstance(value, basestring) or isinstance(value, int) or isinstance(value, float)):
+                    row[i] = str(value)
+
+        return dataset
+
+    def _dataset_to_dict(self, dataset, description):
+
+        newdataset = []
+        for row in dataset:
+            dictrow = {}
+            newdataset += [dictrow]
+            for i, col in enumerate(row):
+                dictrow[description[i][0]] = col
+
+        # cooler to use list comprehension, but indecipherable
+        # {description[i][0]:col for row in dataset for i, col in enumerate(row)}
+        return(newdataset)
+
+    __description_labels = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
+    def _description_to_dict(self, description):
+
+        ret = dict()
+        for col in description:
+            ret[col[0]] = newcol = dict()
+            for i, field in enumerate(col):
+                if i and field:
+                    newcol[self.__description_labels[i]] = field
+        return ret
+            
     def _get_query_results(self, action_result):
+
+        summary = { "num_datasets": 0 }
+
+        dataset_results = {}
+        all_datasets = []
 
         try:
 
-            results = []
-            columns = self._cursor.description
+            num_dataset = 0
+            while True:
 
-            for value in self._cursor.fetchall():
+                # description property is from DB-API (PEP249)
+                description = self._cursor.description
+                description = self._remediate_description_names(description)
 
-                column_dict = {}
+                dataset = self._cursor.fetchall()
+                dataset = self._remediate_dataset_value(dataset, description)
+                dataset = self._dataset_to_dict(dataset, description)
+                description = self._description_to_dict(description)
+                all_datasets += [ {"dataset": dataset, "description": description } ]
 
-                for index, column in enumerate(value):
+                summary["dataset:{}:rows".format(num_dataset)] = len(dataset)
+                summary["dataset:{}:columns".format(num_dataset)] = len(dataset[0]) if len(dataset) > 0 else 0
+                num_dataset += 1
+                summary["num_datasets"] = num_dataset
 
-                    if columns[index][1] == 2 and column is not None:
-                        column = '0x{0}'.format(binascii.hexlify(column).decode().upper())
-
-                    column_dict[columns[index][0]] = column
-
-                results.append(column_dict)
+                if not self._cursor.nextset():
+                    break
 
         except OperationalError:  # No rows in results
             return RetVal(phantom.APP_SUCCESS, [])
+
         except Exception as e:
-            return RetVal(action_result.set_status(
-                phantom.APP_ERROR,
-                "Unable to retrieve results from query",
-                e
-            ))
-        return RetVal(phantom.APP_SUCCESS, results)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to retrieve results from query", e))
+
+        action_result.update_summary(summary)
+
+        if self._add_datasets_as_rows:
+            return RetVal(phantom.APP_SUCCESS, all_datasets)
+
+        else:
+            # flatten the datasets to a single list of dictionaries
+            results = []
+            for d in all_datasets:
+                for r in d['dataset']:
+                    results += [r]
+            return RetVal(phantom.APP_SUCCESS, results)
 
     def _check_for_valid_schema(self, action_result, schema):
         format_vars = (schema,)
@@ -206,6 +281,11 @@ class MicrosoftSqlServerConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully listed tables")
 
     def _handle_run_query(self, param):
+
+        self._default_to_string = param.get("default_to_string", False)
+        self._datetime_to_iso8601 = param.get("datetime_to_iso8601", False)
+        self._add_datasets_as_rows = param.get("add_datasets_as_rows", self._add_datasets_as_rows)
+
         action_result = self.add_action_result(ActionResult(dict(param)))
         query = param['query']
         format_vars = self._get_format_vars(param)
@@ -271,6 +351,10 @@ class MicrosoftSqlServerConnector(BaseConnector):
         username = config['username']
         password = config['password']
         database = config['database']
+
+        self._default_to_string = False
+        self._datetime_to_iso8601 = False
+        self._add_datasets_as_rows = False
 
         try:
             self._connection = pymssql.connect(
