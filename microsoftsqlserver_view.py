@@ -4,7 +4,7 @@
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
 
-from django.http import HttpResponse
+# from django.http import HttpResponse
 import json
 
 
@@ -17,16 +17,16 @@ def display_query_results(provides, all_results, context):
             ctx_result['param'] = result.get_param()
 
             add_datasets_as_rows = ctx_result['param'].get('add_datasets_as_rows', False)
-            #ctx_result['add_datasets_as_rows'] = add_datasets_as_rows
-            #ctx_result['description_headers'] = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
+            # ctx_result['add_datasets_as_rows'] = add_datasets_as_rows
+            # ctx_result['description_headers'] = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
 
             data = reformat_data(result.get_data(), ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"], add_datasets_as_rows)
-            
+
             if (data):
                 ctx_result['tables'] = data
 
-            #ctx_result['headers'] = data[0]['headers']
-            #ctx_result['rows'] = data[0]['rows']
+            # ctx_result['headers'] = data[0]['headers']
+            # ctx_result['rows'] = data[0]['rows']
 
             summary = result.get_summary()
             if (summary):
@@ -35,6 +35,7 @@ def display_query_results(provides, all_results, context):
             results.append(ctx_result)
 
     return "run_query.html"
+
 
 def reformat_data(data, description_headers, add_datasets_as_rows):
 
