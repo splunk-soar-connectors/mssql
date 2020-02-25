@@ -1,5 +1,5 @@
 # File: microsoftsqlserver_connector.py
-# Copyright (c) 2017-2019 Splunk Inc.
+# Copyright (c) 2017-2020 Splunk Inc.
 #
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
@@ -43,7 +43,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
     # fix empty name values in description
     def _remediate_description_names(self, description):
-    
+
         description = [ list(r) for r in description ]
         name = "__name_not_provided__"
         for i, r in enumerate(description):
@@ -57,10 +57,10 @@ class MicrosoftSqlServerConnector(BaseConnector):
         for row in dataset:
             for i, value in enumerate(row):
 
-                col_name = description[i][0]
+                # col_name = description[i][0]
                 col_type = description[i][1]
 
-                if col_type == 2 and value != None:
+                if col_type == 2 and value is not None:
                     row[i] = '0x{0}'.format(binascii.hexlify(value).decode().upper())
 
                 # convert dates to iso8601
@@ -86,22 +86,23 @@ class MicrosoftSqlServerConnector(BaseConnector):
         # {description[i][0]:col for row in dataset for i, col in enumerate(row)}
         return(newdataset)
 
-    __description_labels = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
     def _description_to_dict(self, description):
+
+        description_labels = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
 
         ret = dict()
         for col in description:
             ret[col[0]] = newcol = dict()
             for i, field in enumerate(col):
                 if i and field:
-                    newcol[self.__description_labels[i]] = field
+                    newcol[description_labels[i]] = field
         return ret
-            
+
     def _get_query_results(self, action_result):
 
         summary = { "num_datasets": 0 }
 
-        dataset_results = {}
+        # dataset_results = {}
         all_datasets = []
 
         try:
@@ -310,11 +311,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 )
 
         for row in results:
-            for i in row:
-                if isinstance(row[i], datetime.datetime):
-                    action_result.add_data({ i: str(row[i]) })
-                else:
-                    action_result.add_data(row)
+            action_result.add_data(row)
 
         summary = action_result.update_summary({})
         summary['num_rows'] = len(results)
