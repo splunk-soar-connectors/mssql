@@ -438,6 +438,30 @@
                     "required": false,
                     "primary": false,
                     "order": 3
+                },
+                "datetime_to_iso8601": {
+                    "description": "Convert column types of datetime to iso8601",
+                    "data_type": "boolean",
+                    "required": false,
+                    "primary": false,
+                    "default": false,
+                    "order": 4
+                },
+                "default_to_string": {
+                    "description": "Convert any non-standard column types to string; ie. datetime",
+                    "data_type": "boolean",
+                    "required": false,
+                    "primary": false,
+                    "default": true,
+                    "order": 5
+                },
+                "add_datasets_as_rows": {
+                    "description": "Run query will return each dataset as a separate row in the action result",
+                    "data_type": "boolean",
+                    "required": false,
+                    "primary": false,
+                    "default": false,
+                    "order": 6
                 }
             },
             "output": [
