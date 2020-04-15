@@ -432,29 +432,12 @@
                     "primary": false,
                     "order": 2
                 },
-                "datetime_to_iso8601": {
-                    "description": "Convert column types of datetime to iso8601",
+                "non_query": {
+                    "description": "Do not run this command in a transaction.",
                     "data_type": "boolean",
                     "required": false,
                     "primary": false,
-                    "default": false,
                     "order": 3
-                },
-                "default_to_string": {
-                    "description": "Convert any non-standard column types to string; ie. datetime",
-                    "data_type": "boolean",
-                    "required": false,
-                    "primary": false,
-                    "default": true,
-                    "order": 4
-                },
-                "add_datasets_as_rows": {
-                    "description": "Run query will return each dataset as a separate row in the action result",
-                    "data_type": "boolean",
-                    "required": false,
-                    "primary": false,
-                    "default": false,
-                    "order": 5
                 }
             },
             "output": [
@@ -464,6 +447,18 @@
                     "example_values": [
                         "success"
                     ]
+                },
+                {
+                    "data_path": "action_result.parameter.add_datasets_as_rows",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.datetime_to_iso8601",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.default_to_string",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.parameter.format_vars",
@@ -478,24 +473,12 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.parameter.datetime_to_iso8601",
-                    "data_type": "string"
+                    "data_path": "action_result.parameter.no_transaction",
+                    "data_type": "boolean"
                 },
                 {
-                    "data_path": "action_result.parameter.default_to_string",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.parameter.add_datasets_as_rows",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.dataset",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.description",
-                    "data_type": "string"
+                    "data_path": "action_result.parameter.non_query",
+                    "data_type": "boolean"
                 },
                 {
                     "data_path": "action_result.parameter.query",
@@ -506,6 +489,14 @@
                     "example_values": [
                         "select * from dbo.TestTable"
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.dataset",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.summary.num_datasets",

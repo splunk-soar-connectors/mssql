@@ -290,13 +290,22 @@ class MicrosoftSqlServerConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         query = param['query']
         format_vars = self._get_format_vars(param)
-
+        non_query = param.get('non_query', False)
+        
         try:
-            self._cursor.execute(query, format_vars)
+            if non_query:
+                self._connection._conn.execute_non_query('ROLLBACK TRAN')
+                self._connection._conn.execute_non_query(query, format_vars)
+            else:
+                self._cursor.execute(query, format_vars)
         except Exception as e:
             return action_result.set_status(
                 phantom.APP_ERROR, "Error running query", e
             )
+
+        if non_query:
+            action_result.update_summary({'num_rows': 0})
+            return action_result.set_status(phantom.APP_SUCCESS, "Successfully ran non-query")
 
         ret_val, results = self._get_query_results(action_result)
         if phantom.is_fail(ret_val):
