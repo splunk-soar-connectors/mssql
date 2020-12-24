@@ -68,7 +68,12 @@ class MicrosoftSqlServerConnector(BaseConnector):
                     row[i] = value.isoformat()
 
                 # catchall for oddball column types
-                if self._default_to_string and not (isinstance(value, basestring) or isinstance(value, int) or isinstance(value, float)):
+                try:
+                    _str_type = basestring
+                except NameError:
+                    _str_type = str
+
+                if self._default_to_string and not (isinstance(value, _str_type) or isinstance(value, int) or isinstance(value, float)):
                     row[i] = str(value)
 
         return dataset
@@ -112,6 +117,9 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
                 # description property is from DB-API (PEP249)
                 description = self._cursor.description
+
+                if not description:  # For non select queries
+                    description = list()
                 description = self._remediate_description_names(description)
 
                 dataset = self._cursor.fetchall()
@@ -188,7 +196,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
     def _get_format_vars(self, param):
         format_vars = param.get('format_vars')
         if format_vars:
-            format_vars = tuple(csv.reader([format_vars], quotechar='"', skipinitialspace=True, escapechar='\\').next())
+            format_vars = tuple(next(csv.reader([format_vars], quotechar='"', skipinitialspace=True, escapechar='\\')))
         return format_vars
 
     def _handle_test_connectivity(self, param):
@@ -396,8 +404,9 @@ if __name__ == '__main__':
 
     if (username and password):
         try:
-            print ("Accessing the Login page")
-            r = requests.get("https://127.0.0.1/login", verify=False)
+            login_url = BaseConnector._get_phantom_base_url() + "login"
+            print("Accessing the Login page")
+            r = requests.get(login_url, verify=False)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -407,17 +416,17 @@ if __name__ == '__main__':
 
             headers = dict()
             headers['Cookie'] = 'csrftoken=' + csrftoken
-            headers['Referer'] = 'https://127.0.0.1/login'
+            headers['Referer'] = login_url
 
-            print ("Logging into Platform to get the session id")
-            r2 = requests.post("https://127.0.0.1/login", verify=False, data=data, headers=headers)
+            print("Logging into Platform to get the session id")
+            r2 = requests.post(login_url, verify=False, data=data, headers=headers)
             session_id = r2.cookies['sessionid']
         except Exception as e:
-            print ("Unable to get session id from the platfrom. Error: " + str(e))
+            print("Unable to get session id from the platfrom. Error: " + str(e))
             exit(1)
 
     if (len(sys.argv) < 2):
-        print "No test json specified as input"
+        print("No test json specified as input")
         exit(0)
 
     with open(sys.argv[1]) as f:
@@ -432,6 +441,6 @@ if __name__ == '__main__':
             in_json['user_session_token'] = session_id
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
-        print (json.dumps(json.loads(ret_val), indent=4))
+        print(json.dumps(json.loads(ret_val), indent=4))
 
     exit(0)
