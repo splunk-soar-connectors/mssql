@@ -9,7 +9,7 @@
     "product_name": "Microsoft SQL Server",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2017-2020 Splunk Inc.",
+    "license": "Copyright (c) 2017-2021 Splunk Inc.",
     "app_version": "2.0.1",
     "utctime_updated": "2020-12-24T05:10:42.000000Z",
     "package_name": "phantom_microsoftsqlserver",
@@ -17,6 +17,9 @@
     "min_phantom_version": "4.9.39220",
     "app_wizard_version": "1.0.0",
     "python_version": "3",
+    "latest_tested_versions": [
+        "Microsoft SQL Server 2012"
+    ],
     "pip_dependencies": {
         "wheel": [
             {
@@ -64,7 +67,6 @@
             "action": "test connectivity",
             "identifier": "test_connectivity",
             "description": "Validate the asset configuration for connectivity using supplied configuration",
-            "verbose": "",
             "type": "test",
             "read_only": true,
             "parameters": {},
@@ -75,7 +77,6 @@
             "action": "list columns",
             "identifier": "list_columns",
             "description": "List all the columns in a table",
-            "verbose": "",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -92,7 +93,6 @@
                 "table_schema": {
                     "description": "Table Schema",
                     "data_type": "string",
-                    "required": false,
                     "primary": true,
                     "contains": [
                         "mssql table schema"
@@ -105,7 +105,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -314,7 +315,6 @@
                 "table_schema": {
                     "description": "Table Schema",
                     "data_type": "string",
-                    "required": false,
                     "primary": true,
                     "contains": [
                         "mssql table schema"
@@ -327,7 +327,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -430,38 +431,28 @@
                 "format_vars": {
                     "description": "Comma separated list of variables",
                     "data_type": "string",
-                    "required": false,
-                    "primary": false,
                     "order": 1
                 },
                 "no_commit": {
                     "description": "Do not commit changes to the Database",
                     "data_type": "boolean",
-                    "required": false,
-                    "primary": false,
                     "order": 2
                 },
                 "datetime_to_iso8601": {
                     "description": "Convert column types of datetime to iso8601",
                     "data_type": "boolean",
-                    "required": false,
-                    "primary": false,
                     "default": false,
                     "order": 3
                 },
                 "default_to_string": {
                     "description": "Convert any non-standard column types to string; ie. datetime",
                     "data_type": "boolean",
-                    "required": false,
-                    "primary": false,
                     "default": true,
                     "order": 4
                 },
                 "add_datasets_as_rows": {
                     "description": "Run query will return each dataset as a separate row in the action result",
                     "data_type": "boolean",
-                    "required": false,
-                    "primary": false,
                     "default": false,
                     "order": 5
                 }
@@ -471,7 +462,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
