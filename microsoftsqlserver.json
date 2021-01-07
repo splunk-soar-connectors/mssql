@@ -8,19 +8,32 @@
     "logo_dark": "microsoftsqlserver_dark.svg",
     "product_name": "Microsoft SQL Server",
     "product_version_regex": ".*",
-    "publisher": "Phantom",
-    "license": "Copyright (c) Phantom Cyber Corporation, 2017",
-    "app_version": "1.0.7",
-    "utctime_updated": "2017-12-28T00:34:18.000000Z",
+    "publisher": "Splunk",
+    "license": "Copyright (c) 2017-2021 Splunk Inc.",
+    "app_version": "2.0.2",
+    "utctime_updated": "2021-01-05T17:18:24.000000Z",
     "package_name": "phantom_microsoftsqlserver",
-    "main_module": "microsoftsqlserver_connector.pyc",
-    "min_phantom_version": "3.0.251",
+    "main_module": "microsoftsqlserver_connector.py",
+    "min_phantom_version": "4.9.39220",
     "app_wizard_version": "1.0.0",
+    "python_version": "3",
+    "latest_tested_versions": [
+        "Microsoft SQL Server 2012",
+        "Microsoft SQL Server 2016"
+    ],
     "pip_dependencies": {
         "wheel": [
             {
                 "module": "pymssql",
                 "input_file": "pymssql/pymssql-2.1.3-cp27-cp27mu-manylinux1_x86_64.whl"
+            }
+        ]
+    },
+    "pip3_dependencies": {
+        "wheel": [
+            {
+                "module": "pymssql",
+                "input_file": "pymssql/pymssql-2.1.5-cp36-cp36m-manylinux1_x86_64.whl"
             }
         ]
     },
@@ -55,7 +68,6 @@
             "action": "test connectivity",
             "identifier": "test_connectivity",
             "description": "Validate the asset configuration for connectivity using supplied configuration",
-            "verbose": "",
             "type": "test",
             "read_only": true,
             "parameters": {},
@@ -66,7 +78,6 @@
             "action": "list columns",
             "identifier": "list_columns",
             "description": "List all the columns in a table",
-            "verbose": "",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -83,7 +94,6 @@
                 "table_schema": {
                     "description": "Table Schema",
                     "data_type": "string",
-                    "required": false,
                     "primary": true,
                     "contains": [
                         "mssql table schema"
@@ -96,7 +106,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -305,7 +316,6 @@
                 "table_schema": {
                     "description": "Table Schema",
                     "data_type": "string",
-                    "required": false,
                     "primary": true,
                     "contains": [
                         "mssql table schema"
@@ -318,7 +328,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -421,16 +432,30 @@
                 "format_vars": {
                     "description": "Comma separated list of variables",
                     "data_type": "string",
-                    "required": false,
-                    "primary": false,
                     "order": 1
                 },
                 "no_commit": {
                     "description": "Do not commit changes to the Database",
                     "data_type": "boolean",
-                    "required": false,
-                    "primary": false,
                     "order": 2
+                },
+                "datetime_to_iso8601": {
+                    "description": "Convert column types of datetime to iso8601",
+                    "data_type": "boolean",
+                    "default": false,
+                    "order": 3
+                },
+                "default_to_string": {
+                    "description": "Convert any non-standard column types to string; ie. datetime",
+                    "data_type": "boolean",
+                    "default": true,
+                    "order": 4
+                },
+                "add_datasets_as_rows": {
+                    "description": "Run query will return each dataset as a separate row in the action result",
+                    "data_type": "boolean",
+                    "default": false,
+                    "order": 5
                 }
             },
             "output": [
@@ -438,7 +463,8 @@
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
-                        "success"
+                        "success",
+                        "failed"
                     ]
                 },
                 {
@@ -454,7 +480,23 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*",
+                    "data_path": "action_result.parameter.datetime_to_iso8601",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.default_to_string",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.add_datasets_as_rows",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.dataset",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.description",
                     "data_type": "string"
                 },
                 {
@@ -466,6 +508,10 @@
                     "example_values": [
                         "select * from dbo.TestTable"
                     ]
+                },
+                {
+                    "data_path": "action_result.summary.num_datasets",
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.summary.num_rows",
