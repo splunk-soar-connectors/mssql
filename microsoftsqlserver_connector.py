@@ -298,13 +298,22 @@ class MicrosoftSqlServerConnector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         query = param['query']
         format_vars = self._get_format_vars(param)
+        non_query = param.get('non_query', False)
 
         try:
-            self._cursor.execute(query, format_vars)
+            if non_query:
+                self._connection._conn.execute_non_query('ROLLBACK TRAN')
+                self._connection._conn.execute_non_query(query, format_vars)
+            else:
+                self._cursor.execute(query, format_vars)
         except Exception as e:
             return action_result.set_status(
                 phantom.APP_ERROR, "Error running query", e
             )
+
+        if non_query:
+            action_result.update_summary({'num_rows': 0})
+            return action_result.set_status(phantom.APP_SUCCESS, "Successfully ran non-query")
 
         ret_val, results = self._get_query_results(action_result)
         if phantom.is_fail(ret_val):
@@ -330,6 +339,14 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
         ret_val = phantom.APP_SUCCESS
 
+        # To make this app work in a targeted mode where you can specify the
+        # host with each action, the code to connect to the database was moved
+        # from initialize to here.
+        if phantom.is_fail(self._connect_sql(param)):
+            action_result = self.add_action_result(ActionResult(dict(param)))
+            action_result.set_status(phantom.APP_ERROR, "Unable to connect to host: {0}".format(param['host']))
+            return phantom.APP_ERROR
+
         # Get the action that we are supposed to execute for this App Run
         action_id = self.get_action_identifier()
 
@@ -351,16 +368,28 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
     def initialize(self):
         self._state = self.load_state()
-        config = self.get_config()
-        host = config['host']
-        username = config['username']
-        password = config['password']
-        database = config['database']
-
         self._default_to_string = False
         self._datetime_to_iso8601 = False
         self._add_datasets_as_rows = False
 
+        return phantom.APP_SUCCESS
+
+    def _connect_sql(self, param):
+        config = self.get_config()
+        param = self.get_current_param()
+        username = config['username']
+        password = config['password']
+        host = param.get('host', config.get('host'))
+        database = param.get('database', config.get('database'))
+        param['host'] = host
+        param['database'] = database
+
+        if not host:
+            return self._initialize_error("host not provided or configured")
+        if not database:
+            return self._initialize_error("database not provided or configured")
+
+        self._cursor = None
         try:
             self._connection = pymssql.connect(
                 host, username, password, database
@@ -368,6 +397,11 @@ class MicrosoftSqlServerConnector(BaseConnector):
             self._cursor = self._connection.cursor()
         except Exception as e:
             return self._initialize_error("Error authenticating with database", e)
+
+        # should be unnecessary
+        if self._cursor is None:
+            return self._initilize_error("Error connecting to host: {}".format(host))
+
         self.save_progress("Database connection established")
         return phantom.APP_SUCCESS
 

@@ -10,7 +10,7 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2017-2021 Splunk Inc.",
-    "app_version": "2.0.3",
+    "app_version": "2.0.301",
     "utctime_updated": "2021-01-07T05:16:21.000000Z",
     "package_name": "phantom_microsoftsqlserver",
     "main_module": "microsoftsqlserver_connector.py",
@@ -39,13 +39,13 @@
     },
     "configuration": {
         "host": {
-            "description": "Hostname or IP Address",
+            "description": "Database hostname or IP Address",
             "data_type": "string",
             "required": true,
             "order": 0
         },
         "database": {
-            "description": "Database",
+            "description": "Database name",
             "data_type": "string",
             "required": true,
             "order": 1
@@ -68,10 +68,56 @@
             "action": "test connectivity",
             "identifier": "test_connectivity",
             "description": "Validate the asset configuration for connectivity using supplied configuration",
-            "type": "test",
+            "type": "generic",
             "read_only": true,
-            "parameters": {},
-            "output": [],
+            "parameters": {
+                "host": {
+                    "description": "Optional database hostname or ip address",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "hostname",
+                        "host"
+                    ],
+                    "order": 0
+                },
+                "database": {
+                    "description": "Optional database name",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "mssql database name"
+                    ],
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.host",
+                    "data_type": "string",
+                    "contains": [
+                        "hostname",
+                        "host"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.database",
+                    "data_type": "string",
+                    "contains": [
+                        "mssql database name"
+                    ]
+                }
+            ],
             "versions": "EQ(*)"
         },
         {
@@ -99,6 +145,27 @@
                         "mssql table schema"
                     ],
                     "order": 1
+                },
+                "host": {
+                    "description": "Optional database hostname or ip address",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "hostname",
+                        "host"
+                    ],
+                    "order": 2
+                },
+                "database": {
+                    "description": "Optional database name",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "mssql database name"
+                    ],
+                    "order": 3
                 }
             },
             "output": [
@@ -125,6 +192,21 @@
                     "data_type": "string",
                     "contains": [
                         "mssql table schema"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.host",
+                    "data_type": "string",
+                    "contains": [
+                        "hostname",
+                        "host"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.database",
+                    "data_type": "string",
+                    "contains": [
+                        "mssql database name"
                     ]
                 },
                 {
@@ -321,6 +403,27 @@
                         "mssql table schema"
                     ],
                     "order": 0
+                },
+                "host": {
+                    "description": "Optional database hostname or ip address",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "hostname",
+                        "host"
+                    ],
+                    "order": 1
+                },
+                "database": {
+                    "description": "Optional database name",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "mssql database name"
+                    ],
+                    "order": 2
                 }
             },
             "output": [
@@ -340,6 +443,21 @@
                     ],
                     "example_values": [
                         "dbo"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.host",
+                    "data_type": "string",
+                    "contains": [
+                        "hostname",
+                        "host"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.database",
+                    "data_type": "string",
+                    "contains": [
+                        "mssql database name"
                     ]
                 },
                 {
@@ -439,23 +557,51 @@
                     "data_type": "boolean",
                     "order": 2
                 },
+                "non_query": {
+                    "description": "Do not run this command in a transaction",
+                    "data_type": "boolean",
+                    "required": false,
+                    "primary": false,
+                    "order": 3
+                },
                 "datetime_to_iso8601": {
                     "description": "Convert column types of datetime to iso8601",
                     "data_type": "boolean",
                     "default": false,
-                    "order": 3
+                    "order": 4
                 },
                 "default_to_string": {
                     "description": "Convert any non-standard column types to string; ie. datetime",
                     "data_type": "boolean",
                     "default": true,
-                    "order": 4
+                    "order": 5
                 },
                 "add_datasets_as_rows": {
                     "description": "Run query will return each dataset as a separate row in the action result",
                     "data_type": "boolean",
                     "default": false,
-                    "order": 5
+                    "order": 6
+                },
+                "host": {
+                    "description": "Optional database hostname or ip address",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "hostname",
+                        "host"
+                    ],
+                    "order": 7
+                },
+                "database": {
+                    "description": "Optional database name",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "mssql database name"
+                    ],
+                    "order": 8
                 }
             },
             "output": [
@@ -480,6 +626,10 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.parameter.non_query",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.parameter.datetime_to_iso8601",
                     "data_type": "string"
                 },
@@ -490,6 +640,21 @@
                 {
                     "data_path": "action_result.parameter.add_datasets_as_rows",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.host",
+                    "data_type": "string",
+                    "contains": [
+                        "hostname",
+                        "host"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.database",
+                    "data_type": "string",
+                    "contains": [
+                        "mssql database name"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.dataset",
