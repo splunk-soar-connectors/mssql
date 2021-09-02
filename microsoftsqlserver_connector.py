@@ -30,6 +30,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
     def __init__(self):
         super(MicrosoftSqlServerConnector, self).__init__()
         self._state = None
+        self._cursor = None
 
     def _initialize_error(self, msg, exception=None):
         if self.get_action_identifier() == "test_connectivity":
@@ -293,7 +294,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
         self._default_to_string = param.get("default_to_string", False)
         self._datetime_to_iso8601 = param.get("datetime_to_iso8601", False)
-        self._add_datasets_as_rows = param.get("add_datasets_as_rows", self._add_datasets_as_rows)
+        self._add_datasets_as_rows = param.get('add_datasets_as_rows', self._add_datasets_as_rows)
 
         action_result = self.add_action_result(ActionResult(dict(param)))
         query = param['query']
@@ -366,19 +367,17 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
         return ret_val
 
-    def initialize(self):
-        self._state = self.load_state()
+    def _connect_sql(self, param):
         self._default_to_string = False
         self._datetime_to_iso8601 = False
         self._add_datasets_as_rows = False
+        self._state = self.load_state()
 
-        return phantom.APP_SUCCESS
-
-    def _connect_sql(self, param):
         config = self.get_config()
         param = self.get_current_param()
         username = config['username']
         password = config['password']
+        port = config['port']
         host = param.get('host', config.get('host'))
         database = param.get('database', config.get('database'))
         param['host'] = host
@@ -392,7 +391,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
         self._cursor = None
         try:
             self._connection = pymssql.connect(
-                host, username, password, database
+                host, username, password, database, port=port
             )
             self._cursor = self._connection.cursor()
         except Exception as e:
@@ -400,9 +399,12 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
         # should be unnecessary
         if self._cursor is None:
-            return self._initilize_error("Error connecting to host: {}".format(host))
+            return self._initialize_error("Error connecting to host: {}".format(host))
 
         self.save_progress("Database connection established")
+        return True
+
+    def initialize(self):
         return phantom.APP_SUCCESS
 
     def finalize(self):
@@ -430,13 +432,13 @@ if __name__ == '__main__':
     username = args.username
     password = args.password
 
-    if (username is not None and password is None):
+    if username is not None and password is None:
 
         # User specified a username but not a password, so ask
         import getpass
         password = getpass.getpass("Password: ")
 
-    if (username and password):
+    if username and password:
         try:
             login_url = BaseConnector._get_phantom_base_url() + "login"
             print("Accessing the Login page")
@@ -459,7 +461,7 @@ if __name__ == '__main__':
             print("Unable to get session id from the platfrom. Error: " + str(e))
             exit(1)
 
-    if (len(sys.argv) < 2):
+    if len(sys.argv) < 2:
         print("No test json specified as input")
         exit(0)
 
@@ -471,7 +473,7 @@ if __name__ == '__main__':
         connector = MicrosoftSqlServerConnector()
         connector.print_progress_message = True
 
-        if (session_id is not None):
+        if session_id is not None:
             in_json['user_session_token'] = session_id
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
