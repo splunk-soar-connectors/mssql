@@ -10,7 +10,7 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2017-2021 Splunk Inc.",
-    "app_version": "2.0.3",
+    "app_version": "2.1.0",
     "utctime_updated": "2021-01-07T05:16:21.000000Z",
     "package_name": "phantom_microsoftsqlserver",
     "main_module": "microsoftsqlserver_connector.py",
@@ -76,52 +76,8 @@
             "description": "Validate the asset configuration for connectivity using supplied configuration",
             "type": "generic",
             "read_only": true,
-            "parameters": {
-                "host": {
-                    "description": "Optional database hostname or ip address",
-                    "data_type": "string",
-                    "primary": true,
-                    "contains": [
-                        "hostname",
-                        "host"
-                    ],
-                    "order": 0
-                },
-                "database": {
-                    "description": "Optional database name",
-                    "data_type": "string",
-                    "primary": true,
-                    "contains": [
-                        "mssql database name"
-                    ],
-                    "order": 1
-                }
-            },
-            "output": [
-                {
-                    "data_path": "action_result.status",
-                    "data_type": "string",
-                    "example_values": [
-                        "success",
-                        "failed"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.host",
-                    "data_type": "string",
-                    "contains": [
-                        "hostname",
-                        "host"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.database",
-                    "data_type": "string",
-                    "contains": [
-                        "mssql database name"
-                    ]
-                }
-            ],
+            "parameters": {},
+            "output": [],
             "versions": "EQ(*)"
         },
         {

@@ -397,7 +397,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
         except Exception as e:
             return self._initialize_error("Error authenticating with database", e)
 
-        # should be unnecessary
+        # check for the connection to the host
         if self._cursor is None:
             return self._initialize_error("Error connecting to host: {}".format(host))
 
