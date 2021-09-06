@@ -69,12 +69,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
                     row[i] = value.isoformat()
 
                 # catchall for oddball column types
-                try:
-                    _str_type = basestring
-                except NameError:
-                    _str_type = str
-
-                if self._default_to_string and not (isinstance(value, _str_type) or isinstance(value, int) or isinstance(value, float)):
+                if self._default_to_string and not (isinstance(value, str) or isinstance(value, int) or isinstance(value, float)):
                     row[i] = str(value)
 
         return dataset

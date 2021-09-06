@@ -233,12 +233,6 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.COLUMN_DEFAULT",
-                    "data_type": "string",
-                    "column_name": "Default Value",
-                    "column_order": 2
-                },
-                {
                     "data_path": "action_result.data.*.COLUMN_NAME",
                     "data_type": "string",
                     "example_values": [
@@ -257,8 +251,14 @@
                     "column_order": 1
                 },
                 {
+                    "data_path": "action_result.data.*.COLUMN_DEFAULT",
+                    "data_type": "string",
+                    "column_name": "Default Value",
+                    "column_order": 2
+                },
+                {
                     "data_path": "action_result.data.*.DATETIME_PRECISION",
-                    "data_type": "string"
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.data.*.DOMAIN_CATALOG",
@@ -292,15 +292,15 @@
                 },
                 {
                     "data_path": "action_result.data.*.NUMERIC_PRECISION",
-                    "data_type": "string"
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.data.*.NUMERIC_PRECISION_RADIX",
-                    "data_type": "string"
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.data.*.NUMERIC_SCALE",
-                    "data_type": "string"
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.data.*.ORDINAL_POSITION",
@@ -599,6 +599,111 @@
                 }
             },
             "output": [
+                {
+                    "data_path": "action_result.data.*.dataset.*.age",
+                    "data_type": "numeric",
+                    "example_values": [
+                        10
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.dataset.*.bod",
+                    "data_type": "numeric",
+                    "example_values": [
+                        20
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.dataset.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "runbook"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.dataset.*.petname",
+                    "data_type": "string",
+                    "example_values": [
+                        "\"runbook\"\n"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description.age.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description.bod.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description.name.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description.petname.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description.mydate.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        4
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created_at",
+                    "data_type": "string",
+                    "example_values": [
+                        "2020-12-23 15:23:44"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.float_column",
+                    "data_type": "string",
+                    "example_values": [
+                        "3.4000"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.dataset.*.created_at",
+                    "data_type": "string",
+                    "example_values": [
+                        "2020-12-23 15:23:44"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.dataset.*.float_column",
+                    "data_type": "string",
+                    "example_values": [
+                        "3.4000"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description.created_at.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        4
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description.float_column.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5
+                    ]
+                },
                 {
                     "data_path": "action_result.data.*.__name_not_provided__0",
                     "data_type": "string"
