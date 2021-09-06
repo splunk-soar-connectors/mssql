@@ -208,8 +208,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
     def _handle_list_columns(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         table_name = param['table_name']
-        config = self.get_config()
-        dbname = param.get('database', config['database'])
+        dbname = param['database']
         table_schema = param.get('table_schema')
 
         if phantom.is_fail(self._check_for_valid_table(action_result, table_name, not bool(table_schema))):
@@ -246,8 +245,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
     def _handle_list_tables(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        config = self.get_config()
-        dbname = param.get('database', config['database'])
+        dbname = param['database']
         table_schema = param.get('table_schema')
 
         query = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = %s AND TABLE_CATALOG = %s"
