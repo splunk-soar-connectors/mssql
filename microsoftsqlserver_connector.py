@@ -115,14 +115,11 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
             num_dataset = 0
             while True:
-
                 # description property is from DB-API (PEP249)
                 description = self._cursor.description
-
                 if not description:  # For non select queries
                     description = list()
                 description = self._remediate_description_names(description)
-
                 dataset = self._cursor.fetchall()
                 dataset = self._remediate_dataset_value(dataset, description)
                 dataset = self._dataset_to_dict(dataset, description)
@@ -136,10 +133,8 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
                 if not self._cursor.nextset():
                     break
-
         except OperationalError:  # No rows in results
             return RetVal(phantom.APP_SUCCESS, [])
-
         except Exception as e:
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to retrieve results from query", e))
 
@@ -147,7 +142,6 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
         if self._add_datasets_as_rows:
             return RetVal(phantom.APP_SUCCESS, all_datasets)
-
         else:
             # flatten the datasets to a single list of dictionaries
             results = []
@@ -218,9 +212,8 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
     def _handle_list_columns(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        config = self.get_config()
         table_name = param['table_name']
-        dbname = config['database']
+        dbname = param['database']
         table_schema = param.get('table_schema')
 
         if phantom.is_fail(self._check_for_valid_table(action_result, table_name, not bool(table_schema))):
@@ -257,8 +250,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
     def _handle_list_tables(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
-        config = self.get_config()
-        dbname = config['database']
+        dbname = param['database']
         table_schema = param.get('table_schema')
 
         query = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = %s AND TABLE_CATALOG = %s"
@@ -377,9 +369,9 @@ class MicrosoftSqlServerConnector(BaseConnector):
         param = self.get_current_param()
         username = config['username']
         password = config['password']
-        port = config['port']
-        host = param.get('host', config.get('host'))
-        database = param.get('database', config.get('database'))
+        port = config.get('port', 1433)
+        host = param.get('host', config['host'])
+        database = param.get('database', config['database'])
         param['host'] = host
         param['database'] = database
 

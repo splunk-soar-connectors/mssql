@@ -74,7 +74,7 @@
             "action": "test connectivity",
             "identifier": "test_connectivity",
             "description": "Validate the asset configuration for connectivity using supplied configuration",
-            "type": "generic",
+            "type": "test",
             "read_only": true,
             "parameters": {},
             "output": [],
@@ -236,7 +236,7 @@
                     "data_path": "action_result.data.*.COLUMN_DEFAULT",
                     "data_type": "string",
                     "column_name": "Default Value",
-                    "column_order": 3
+                    "column_order": 2
                 },
                 {
                     "data_path": "action_result.data.*.COLUMN_NAME",
@@ -288,7 +288,7 @@
                         "NO"
                     ],
                     "column_name": "Is Nullable",
-                    "column_order": 4
+                    "column_order": 3
                 },
                 {
                     "data_path": "action_result.data.*.NUMERIC_PRECISION",
