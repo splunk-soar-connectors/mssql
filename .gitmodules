@@ -1,4 +1,0 @@
-[submodule "pymssql"]
-	path = pymssql
-	url = git@cd.splunkdev.com:phantom-external/pymssql_wheel.git
-	ignore = dirty
