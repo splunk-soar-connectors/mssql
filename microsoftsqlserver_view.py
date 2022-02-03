@@ -30,7 +30,9 @@ def display_query_results(provides, all_results, context):
             # ctx_result['add_datasets_as_rows'] = add_datasets_as_rows
             # ctx_result['description_headers'] = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
 
-            data = reformat_data(result.get_data(), ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"], add_datasets_as_rows)
+            data = reformat_data(result.get_data(),
+                                 ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"],
+                                 add_datasets_as_rows)
 
             if (data):
                 ctx_result['tables'] = data
