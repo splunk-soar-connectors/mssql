@@ -17,6 +17,7 @@
     "min_phantom_version": "5.1.0",
     "app_wizard_version": "1.0.0",
     "python_version": "3",
+    "fips_compliant": true,
     "latest_tested_versions": [
         "Microsoft SQL Server 2012",
         "Microsoft SQL Server 2016"
