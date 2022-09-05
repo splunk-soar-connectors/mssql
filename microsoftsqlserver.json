@@ -14,19 +14,20 @@
     "utctime_updated": "2022-02-03T21:25:38.000000Z",
     "package_name": "phantom_microsoftsqlserver",
     "main_module": "microsoftsqlserver_connector.py",
-    "min_phantom_version": "5.1.0",
+    "min_phantom_version": "5.3.0",
     "app_wizard_version": "1.0.0",
     "python_version": "3",
     "fips_compliant": true,
     "latest_tested_versions": [
         "Microsoft SQL Server 2012",
-        "Microsoft SQL Server 2016"
+        "Microsoft SQL Server 2016",
+        "Microsoft SQL Server 2022"
     ],
     "pip_dependencies": {
         "wheel": [
             {
                 "module": "certifi",
-                "input_file": "wheels/shared/certifi-2021.10.8-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/certifi-2022.6.15-py3-none-any.whl"
             },
             {
                 "module": "chardet",
@@ -38,7 +39,7 @@
             },
             {
                 "module": "pymssql",
-                "input_file": "wheels/py36/pymssql-2.2.5-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl"
+                "input_file": "wheels/py36/pymssql-2.2.5-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
             },
             {
                 "module": "requests",
@@ -46,7 +47,7 @@
             },
             {
                 "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.8-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/urllib3-1.26.12-py2.py3-none-any.whl"
             }
         ]
     },
@@ -891,7 +892,7 @@
         "wheel": [
             {
                 "module": "certifi",
-                "input_file": "wheels/shared/certifi-2021.10.8-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/certifi-2022.6.15-py3-none-any.whl"
             },
             {
                 "module": "chardet",
@@ -903,7 +904,7 @@
             },
             {
                 "module": "pymssql",
-                "input_file": "wheels/py39/pymssql-2.2.5-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl"
+                "input_file": "wheels/py39/pymssql-2.2.5-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
             },
             {
                 "module": "requests",
@@ -911,7 +912,7 @@
             },
             {
                 "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.8-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/urllib3-1.26.12-py2.py3-none-any.whl"
             }
         ]
     }
