@@ -27,8 +27,8 @@ import requests
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
-import microsoftsqlserver_consts as consts
 import pymssql
+from microsoftsqlserver_consts import *
 from pymssql import OperationalError
 
 
@@ -111,6 +111,32 @@ class MicrosoftSqlServerConnector(BaseConnector):
                     newcol[description_labels[i]] = field
         return ret
 
+    def _get_error_message_from_exception(self, e):
+        """ This method is used to get appropriate error message from the exception.
+        :param e: Exception object
+        :return: error message
+        """
+
+        error_code = None
+        error_msg = MSSQLSERVER_ERROR_MESSAGE_UNAVAILABLE
+
+        try:
+            if hasattr(e, "args"):
+                if len(e.args) > 1:
+                    error_code = e.args[0]
+                    error_msg = e.args[1]
+                elif len(e.args) == 1:
+                    error_msg = e.args[0]
+        except Exception as ex:
+            self.error_print("Error occurred while retrieving exception information: {}".format(str(ex)))
+
+        if not error_code:
+            error_text = "Error Message: {}".format(error_msg)
+        else:
+            error_text = "Error Code: {}. Error Message: {}".format(error_code, error_msg)
+
+        return error_text
+
     def _get_query_results(self, action_result):
 
         summary = { "num_datasets": 0 }
@@ -143,7 +169,8 @@ class MicrosoftSqlServerConnector(BaseConnector):
         except OperationalError:  # No rows in results
             return RetVal(phantom.APP_SUCCESS, [])
         except Exception as e:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to retrieve results from query", e))
+            return RetVal(action_result.set_status(phantom.APP_ERROR,
+                                                   "Unable to retrieve results from query", self._get_error_message_from_exception(e)))
 
         action_result.update_summary(summary)
 
@@ -164,7 +191,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
             self._cursor.execute(query, format_vars)
         except Exception as e:
             return action_result.set_status(
-                phantom.APP_ERROR, "Error searching for schema", e
+                phantom.APP_ERROR, "Error searching for schema", self._get_error_message_from_exception(e)
             )
 
         results = self._cursor.fetchall()
@@ -182,7 +209,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
             self._cursor.execute(query, format_vars)
         except Exception as e:
             return action_result.set_status(
-                phantom.APP_ERROR, "Error searching for table", e
+                phantom.APP_ERROR, "Error searching for table", self._get_error_message_from_exception(e)
             )
 
         results = self._cursor.fetchall()
@@ -208,7 +235,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
             self._cursor.execute(query)
         except Exception as e:
             return action_result.set_status(
-                phantom.APP_ERROR, "Test Connectivity Failed", e
+                phantom.APP_ERROR, "Test Connectivity Failed", self._get_error_message_from_exception(e)
             )
 
         for row in self._cursor:
@@ -218,6 +245,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_columns(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         table_name = param['table_name']
         dbname = param['database']
@@ -239,8 +267,9 @@ class MicrosoftSqlServerConnector(BaseConnector):
         try:
             self._cursor.execute(query, format_vars)
         except Exception as e:
+            self.error_print("Error listing columns")
             return action_result.set_status(
-                phantom.APP_ERROR, "Error listing columns", e
+                phantom.APP_ERROR, "Error listing columns", self._get_error_message_from_exception(e)
             )
 
         ret_val, results = self._get_query_results(action_result)
@@ -256,6 +285,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully listed columns")
 
     def _handle_list_tables(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
         dbname = param['database']
         table_schema = param.get('table_schema')
@@ -273,8 +303,9 @@ class MicrosoftSqlServerConnector(BaseConnector):
         try:
             self._cursor.execute(query, format_vars)
         except Exception as e:
+            self.error_print("Error listing tables")
             return action_result.set_status(
-                phantom.APP_ERROR, "Error listing tables", e
+                phantom.APP_ERROR, "Error listing tables", self._get_error_message_from_exception(e)
             )
 
         ret_val, results = self._get_query_results(action_result)
@@ -290,7 +321,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Successfully listed tables")
 
     def _handle_run_query(self, param):
-
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         self._default_to_string = param.get("default_to_string", False)
         self._datetime_to_iso8601 = param.get("datetime_to_iso8601", False)
         self._add_datasets_as_rows = param.get('add_datasets_as_rows', self._add_datasets_as_rows)
@@ -307,8 +338,9 @@ class MicrosoftSqlServerConnector(BaseConnector):
             else:
                 self._cursor.execute(query, format_vars)
         except Exception as e:
+            self.error_print("Error running query")
             return action_result.set_status(
-                phantom.APP_ERROR, "Error running query", e
+                phantom.APP_ERROR, "Error running query", self._get_error_message_from_exception(e)
             )
 
         if non_query:
@@ -324,7 +356,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 self._connection.commit()
             except Exception as e:
                 return action_result.set_status(
-                    phantom.APP_ERROR, "unable to commit changes", e
+                    phantom.APP_ERROR, "unable to commit changes", self._get_error_message_from_exception(e)
                 )
 
         for row in results:
@@ -394,7 +426,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
             )
             self._cursor = self._connection.cursor()
         except Exception as e:
-            return self._initialize_error("Error authenticating with database", e)
+            return self._initialize_error("Error authenticating with database", self._get_error_message_from_exception(e))
 
         # check for the connection to the host
         if self._cursor is None:
@@ -444,7 +476,7 @@ if __name__ == '__main__':
         try:
             login_url = BaseConnector._get_phantom_base_url() + "login"
             print("Accessing the Login page")
-            r = requests.get(login_url, verify=verify, timeout=consts.DEFAULT_TIMEOUT)
+            r = requests.get(login_url, verify=verify, timeout=DEFAULT_TIMEOUT)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -457,7 +489,7 @@ if __name__ == '__main__':
             headers['Referer'] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=verify, data=data, headers=headers, timeout=consts.DEFAULT_TIMEOUT)
+            r2 = requests.post(login_url, verify=verify, data=data, headers=headers, timeout=DEFAULT_TIMEOUT)
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platfrom. Error: " + str(e))

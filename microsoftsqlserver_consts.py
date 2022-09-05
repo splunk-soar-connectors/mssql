@@ -13,5 +13,7 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 #
-#
+
+# responses
+MSSQLSERVER_ERROR_MESSAGE_UNAVAILABLE = "Error message unavailable. Please check the asset configuration and|or action parameters"
 DEFAULT_TIMEOUT = 30
