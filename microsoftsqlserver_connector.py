@@ -16,11 +16,10 @@
 #
 # Phantom App imports
 import binascii
-# Usage of the consts file is recommended
-# from microsoftsqlserver_consts import *
 import csv
 import datetime
 import json
+import traceback
 
 import phantom.app as phantom
 import requests
@@ -111,6 +110,9 @@ class MicrosoftSqlServerConnector(BaseConnector):
                     newcol[description_labels[i]] = field
         return ret
 
+    def _dump_error_log(self, error, message="Exception occurred."):
+        self.error_print(message, dump_object=error)
+
     def _get_error_message_from_exception(self, e):
         """ This method is used to get appropriate error message from the exception.
         :param e: Exception object
@@ -119,7 +121,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
         error_code = None
         error_msg = MSSQLSERVER_ERROR_MESSAGE_UNAVAILABLE
-
+        self.error_print("Traceback: {}".format(traceback.format_stack()))
         try:
             if hasattr(e, "args"):
                 if len(e.args) > 1:
@@ -128,7 +130,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 elif len(e.args) == 1:
                     error_msg = e.args[0]
         except Exception as ex:
-            self.error_print("Error occurred while retrieving exception information: {}".format(str(ex)))
+            self._dump_error_log(ex, "Error occurred while fetching exception information")
 
         if not error_code:
             error_text = "Error Message: {}".format(error_msg)
