@@ -1,2 +1,2 @@
 **Unreleased**
-* Updated pymssql version [PAPP-27174]
+* Updated 'pymssql' library version [PAPP-27174]
