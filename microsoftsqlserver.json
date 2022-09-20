@@ -124,6 +124,9 @@
                     "data_type": "string",
                     "contains": [
                         "mssql database name"
+                    ],
+                    "example_values": [
+                        "testdb"
                     ]
                 },
                 {
@@ -132,6 +135,9 @@
                     "contains": [
                         "hostname",
                         "host"
+                    ],
+                    "example_values": [
+                        "8.8.8.8"
                     ]
                 },
                 {
@@ -149,6 +155,9 @@
                     "data_type": "string",
                     "contains": [
                         "mssql table schema"
+                    ],
+                    "example_values": [
+                        "testbo"
                     ]
                 },
                 {
@@ -188,7 +197,7 @@
                     "data_path": "action_result.data.*.COLLATION_NAME",
                     "data_type": "string",
                     "example_values": [
-                        "SQL_Latin1_General_CP1_CI_AS"
+                        "SQL_Latin1_General_AS"
                     ]
                 },
                 {
@@ -248,7 +257,8 @@
                     "data_path": "action_result.data.*.IS_NULLABLE",
                     "data_type": "string",
                     "example_values": [
-                        "NO"
+                        "NO",
+                        "YES"
                     ],
                     "column_name": "Is Nullable",
                     "column_order": 3
@@ -293,7 +303,7 @@
                     "data_path": "action_result.data.*.TABLE_SCHEMA",
                     "data_type": "string",
                     "example_values": [
-                        "dbo"
+                        "testbo"
                     ],
                     "contains": [
                         "mssql table schema"
@@ -315,7 +325,10 @@
                 },
                 {
                     "data_path": "action_result.summary.num_columns",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        4
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.num_datasets",
@@ -401,6 +414,9 @@
                     "data_type": "string",
                     "contains": [
                         "mssql database name"
+                    ],
+                    "example_values": [
+                        "testdb"
                     ]
                 },
                 {
@@ -418,14 +434,14 @@
                         "mssql table schema"
                     ],
                     "example_values": [
-                        "dbo"
+                        "testbo"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.TABLE_CATALOG",
                     "data_type": "string",
                     "example_values": [
-                        "tempdb"
+                        "testdb"
                     ]
                 },
                 {
@@ -444,7 +460,7 @@
                     "data_path": "action_result.data.*.TABLE_SCHEMA",
                     "data_type": "string",
                     "example_values": [
-                        "dbo"
+                        "testbo"
                     ],
                     "contains": [
                         "mssql table schema"
@@ -456,7 +472,7 @@
                     "data_path": "action_result.data.*.TABLE_TYPE",
                     "data_type": "string",
                     "example_values": [
-                        "BASE TABLE"
+                        "TEST TABLE"
                     ]
                 },
                 {
@@ -482,7 +498,10 @@
                 },
                 {
                     "data_path": "action_result.summary.num_tables",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        4
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -593,22 +612,34 @@
                 },
                 {
                     "data_path": "action_result.parameter.add_datasets_as_rows",
-                    "data_type": "boolean"
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.database",
                     "data_type": "string",
                     "contains": [
                         "mssql database name"
+                    ],
+                    "example_values": [
+                        "testdb"
                     ]
                 },
                 {
                     "data_path": "action_result.parameter.datetime_to_iso8601",
-                    "data_type": "boolean"
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.default_to_string",
-                    "data_type": "boolean"
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.format_vars",
@@ -620,14 +651,9 @@
                     "contains": [
                         "hostname",
                         "host"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.host",
-                    "data_type": "string",
-                    "contains": [
-                        "hostname",
-                        "host"
+                    ],
+                    "example_values": [
+                        "8.8.8.8"
                     ]
                 },
                 {
@@ -640,7 +666,10 @@
                 },
                 {
                     "data_path": "action_result.parameter.non_query",
-                    "data_type": "boolean"
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.query",
@@ -820,7 +849,10 @@
                 },
                 {
                     "data_path": "action_result.summary.num_datasets",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.num_rows",
