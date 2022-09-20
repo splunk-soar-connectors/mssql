@@ -23,34 +23,6 @@
         "Microsoft SQL Server 2016",
         "Microsoft SQL Server 2022"
     ],
-    "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.6.15-py3-none-any.whl"
-            },
-            {
-                "module": "chardet",
-                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
-            },
-            {
-                "module": "idna",
-                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
-            },
-            {
-                "module": "pymssql",
-                "input_file": "wheels/py36/pymssql-2.2.5-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
-            },
-            {
-                "module": "requests",
-                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.12-py2.py3-none-any.whl"
-            }
-        ]
-    },
     "configuration": {
         "host": {
             "description": "Database hostname or IP Address",
@@ -888,11 +860,39 @@
             "versions": "EQ(*)"
         }
     ],
+    "pip_dependencies": {
+        "wheel": [
+            {
+                "module": "certifi",
+                "input_file": "wheels/py3/certifi-2022.9.14-py3-none-any.whl"
+            },
+            {
+                "module": "chardet",
+                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
+            },
+            {
+                "module": "idna",
+                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
+            },
+            {
+                "module": "pymssql",
+                "input_file": "wheels/py36/pymssql-2.2.5-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+            },
+            {
+                "module": "requests",
+                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
+            },
+            {
+                "module": "urllib3",
+                "input_file": "wheels/shared/urllib3-1.26.12-py2.py3-none-any.whl"
+            }
+        ]
+    },
     "pip39_dependencies": {
         "wheel": [
             {
                 "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.6.15-py3-none-any.whl"
+                "input_file": "wheels/py3/certifi-2022.9.14-py3-none-any.whl"
             },
             {
                 "module": "chardet",
