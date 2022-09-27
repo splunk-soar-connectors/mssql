@@ -10,46 +10,17 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2017-2022 Splunk Inc.",
-    "app_version": "2.1.7",
+    "app_version": "2.2.0",
     "utctime_updated": "2022-02-03T21:25:38.000000Z",
     "package_name": "phantom_microsoftsqlserver",
     "main_module": "microsoftsqlserver_connector.py",
-    "min_phantom_version": "5.1.0",
+    "min_phantom_version": "5.3.3",
     "app_wizard_version": "1.0.0",
     "python_version": "3",
     "fips_compliant": true,
     "latest_tested_versions": [
-        "Microsoft SQL Server 2012",
-        "Microsoft SQL Server 2016"
+        "Microsoft SQL Server 2019"
     ],
-    "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "certifi",
-                "input_file": "wheels/shared/certifi-2021.10.8-py2.py3-none-any.whl"
-            },
-            {
-                "module": "chardet",
-                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
-            },
-            {
-                "module": "idna",
-                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
-            },
-            {
-                "module": "pymssql",
-                "input_file": "wheels/py36/pymssql-2.1.5-cp36-cp36m-manylinux1_x86_64.whl"
-            },
-            {
-                "module": "requests",
-                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.8-py2.py3-none-any.whl"
-            }
-        ]
-    },
     "configuration": {
         "host": {
             "description": "Database hostname or IP Address",
@@ -141,32 +112,32 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.summary.num_datasets",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.dataset:0:rows",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.dataset:0:columns",
-                    "data_type": "numeric",
-                    "example_values": [
-                        23
-                    ]
-                },
-                {
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
                         "success",
                         "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.database",
+                    "data_type": "string",
+                    "contains": [
+                        "mssql database name"
+                    ],
+                    "example_values": [
+                        "testdb"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.host",
+                    "data_type": "string",
+                    "contains": [
+                        "hostname",
+                        "host"
+                    ],
+                    "example_values": [
+                        "8.8.8.8"
                     ]
                 },
                 {
@@ -184,21 +155,9 @@
                     "data_type": "string",
                     "contains": [
                         "mssql table schema"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.host",
-                    "data_type": "string",
-                    "contains": [
-                        "hostname",
-                        "host"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.database",
-                    "data_type": "string",
-                    "contains": [
-                        "mssql database name"
+                    ],
+                    "example_values": [
+                        "testbo"
                     ]
                 },
                 {
@@ -238,12 +197,18 @@
                     "data_path": "action_result.data.*.COLLATION_NAME",
                     "data_type": "string",
                     "example_values": [
-                        "SQL_Latin1_General_CP1_CI_AS"
+                        "SQL_Latin1_General_AS"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.COLLATION_SCHEMA",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.COLUMN_DEFAULT",
+                    "data_type": "string",
+                    "column_name": "Default Value",
+                    "column_order": 2
                 },
                 {
                     "data_path": "action_result.data.*.COLUMN_NAME",
@@ -262,12 +227,6 @@
                     ],
                     "column_name": "Data Type",
                     "column_order": 1
-                },
-                {
-                    "data_path": "action_result.data.*.COLUMN_DEFAULT",
-                    "data_type": "string",
-                    "column_name": "Default Value",
-                    "column_order": 2
                 },
                 {
                     "data_path": "action_result.data.*.DATETIME_PRECISION",
@@ -298,7 +257,8 @@
                     "data_path": "action_result.data.*.IS_NULLABLE",
                     "data_type": "string",
                     "example_values": [
-                        "NO"
+                        "NO",
+                        "YES"
                     ],
                     "column_name": "Is Nullable",
                     "column_order": 3
@@ -343,15 +303,39 @@
                     "data_path": "action_result.data.*.TABLE_SCHEMA",
                     "data_type": "string",
                     "example_values": [
-                        "dbo"
+                        "testbo"
                     ],
                     "contains": [
                         "mssql table schema"
                     ]
                 },
                 {
+                    "data_path": "action_result.summary.dataset:0:columns",
+                    "data_type": "numeric",
+                    "example_values": [
+                        23
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.dataset:0:rows",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
                     "data_path": "action_result.summary.num_columns",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        4
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.num_datasets",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -418,27 +402,6 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.summary.num_datasets",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.dataset:0:rows",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.dataset:0:columns",
-                    "data_type": "numeric",
-                    "example_values": [
-                        4
-                    ]
-                },
-                {
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "example_values": [
@@ -447,13 +410,13 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.parameter.table_schema",
+                    "data_path": "action_result.parameter.database",
                     "data_type": "string",
                     "contains": [
-                        "mssql table schema"
+                        "mssql database name"
                     ],
                     "example_values": [
-                        "dbo"
+                        "testdb"
                     ]
                 },
                 {
@@ -465,17 +428,20 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.parameter.database",
+                    "data_path": "action_result.parameter.table_schema",
                     "data_type": "string",
                     "contains": [
-                        "mssql database name"
+                        "mssql table schema"
+                    ],
+                    "example_values": [
+                        "testbo"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.TABLE_CATALOG",
                     "data_type": "string",
                     "example_values": [
-                        "tempdb"
+                        "testdb"
                     ]
                 },
                 {
@@ -494,7 +460,7 @@
                     "data_path": "action_result.data.*.TABLE_SCHEMA",
                     "data_type": "string",
                     "example_values": [
-                        "dbo"
+                        "testbo"
                     ],
                     "contains": [
                         "mssql table schema"
@@ -506,12 +472,36 @@
                     "data_path": "action_result.data.*.TABLE_TYPE",
                     "data_type": "string",
                     "example_values": [
-                        "BASE TABLE"
+                        "TEST TABLE"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.dataset:0:columns",
+                    "data_type": "numeric",
+                    "example_values": [
+                        4
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.dataset:0:rows",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.num_datasets",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
                     ]
                 },
                 {
                     "data_path": "action_result.summary.num_tables",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        4
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -613,6 +603,121 @@
             },
             "output": [
                 {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.add_datasets_as_rows",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.database",
+                    "data_type": "string",
+                    "contains": [
+                        "mssql database name"
+                    ],
+                    "example_values": [
+                        "testdb"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.datetime_to_iso8601",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.default_to_string",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.format_vars",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.parameter.host",
+                    "data_type": "string",
+                    "contains": [
+                        "hostname",
+                        "host"
+                    ],
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.no_commit",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false,
+                        true
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.non_query",
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.query",
+                    "data_type": "string",
+                    "contains": [
+                        "sql query"
+                    ],
+                    "example_values": [
+                        "select * from dbo.TestTable"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.__name_not_provided__0",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.age",
+                    "data_type": "numeric",
+                    "example_values": [
+                        10
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.baz",
+                    "data_type": "string",
+                    "example_values": [
+                        "comma, comma, quote \\\" end quote \\\" test, "
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.bod",
+                    "data_type": "numeric",
+                    "example_values": [
+                        20
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created_at",
+                    "data_type": "string",
+                    "example_values": [
+                        "2020-12-23 15:23:44"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.dataset",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.data.*.dataset.*.age",
                     "data_type": "numeric",
                     "example_values": [
@@ -624,69 +729,6 @@
                     "data_type": "numeric",
                     "example_values": [
                         20
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.dataset.*.name",
-                    "data_type": "string",
-                    "example_values": [
-                        "runbook"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.dataset.*.petname",
-                    "data_type": "string",
-                    "example_values": [
-                        "\"runbook\"\n"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.description.age.type_code",
-                    "data_type": "numeric",
-                    "example_values": [
-                        3
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.description.bod.type_code",
-                    "data_type": "numeric",
-                    "example_values": [
-                        3
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.description.name.type_code",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.description.petname.type_code",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.description.mydate.type_code",
-                    "data_type": "numeric",
-                    "example_values": [
-                        4
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.created_at",
-                    "data_type": "string",
-                    "example_values": [
-                        "2020-12-23 15:23:44"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.float_column",
-                    "data_type": "string",
-                    "example_values": [
-                        "3.4000"
                     ]
                 },
                 {
@@ -704,6 +746,38 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.dataset.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "runbook"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.dataset.*.petname",
+                    "data_type": "string",
+                    "example_values": [
+                        "\"runbook\"\n"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.description.age.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description.bod.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.description.created_at.type_code",
                     "data_type": "numeric",
                     "example_values": [
@@ -718,42 +792,31 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.__name_not_provided__0",
-                    "data_type": "string"
+                    "data_path": "action_result.data.*.description.mydate.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        4
+                    ]
                 },
                 {
-                    "data_path": "action_result.data.*.baz",
+                    "data_path": "action_result.data.*.description.name.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description.petname.type_code",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.float_column",
                     "data_type": "string",
                     "example_values": [
-                        "comma, comma, quote \\\" end quote \\\" test, "
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.dataset:0:rows",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.summary.dataset:0:columns",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.age",
-                    "data_type": "numeric",
-                    "example_values": [
-                        10
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.bod",
-                    "data_type": "numeric",
-                    "example_values": [
-                        20
+                        "3.4000"
                     ]
                 },
                 {
@@ -771,85 +834,25 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.status",
-                    "data_type": "string",
+                    "data_path": "action_result.summary.dataset:0:columns",
+                    "data_type": "numeric",
                     "example_values": [
-                        "success",
-                        "failed"
+                        1
                     ]
                 },
                 {
-                    "data_path": "action_result.parameter.format_vars",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.parameter.no_commit",
-                    "data_type": "boolean",
+                    "data_path": "action_result.summary.dataset:0:rows",
+                    "data_type": "numeric",
                     "example_values": [
-                        false,
-                        true
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.non_query",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.parameter.datetime_to_iso8601",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.parameter.default_to_string",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.parameter.add_datasets_as_rows",
-                    "data_type": "boolean"
-                },
-                {
-                    "data_path": "action_result.parameter.host",
-                    "data_type": "string",
-                    "contains": [
-                        "hostname",
-                        "host"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.host",
-                    "data_type": "string",
-                    "contains": [
-                        "hostname",
-                        "host"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.database",
-                    "data_type": "string",
-                    "contains": [
-                        "mssql database name"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.dataset",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.description",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.parameter.query",
-                    "data_type": "string",
-                    "contains": [
-                        "sql query"
-                    ],
-                    "example_values": [
-                        "select * from dbo.TestTable"
+                        1
                     ]
                 },
                 {
                     "data_path": "action_result.summary.num_datasets",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.num_rows",
@@ -887,11 +890,11 @@
             "versions": "EQ(*)"
         }
     ],
-    "pip39_dependencies": {
+    "pip_dependencies": {
         "wheel": [
             {
                 "module": "certifi",
-                "input_file": "wheels/shared/certifi-2021.10.8-py2.py3-none-any.whl"
+                "input_file": "wheels/py3/certifi-2022.9.14-py3-none-any.whl"
             },
             {
                 "module": "chardet",
@@ -903,7 +906,7 @@
             },
             {
                 "module": "pymssql",
-                "input_file": "wheels/py39/pymssql-2.1.5-cp39-cp39-manylinux1_x86_64.manylinux_2_5_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+                "input_file": "wheels/py36/pymssql-2.2.5-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
             },
             {
                 "module": "requests",
@@ -911,7 +914,35 @@
             },
             {
                 "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.8-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/urllib3-1.26.12-py2.py3-none-any.whl"
+            }
+        ]
+    },
+    "pip39_dependencies": {
+        "wheel": [
+            {
+                "module": "certifi",
+                "input_file": "wheels/py3/certifi-2022.9.14-py3-none-any.whl"
+            },
+            {
+                "module": "chardet",
+                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
+            },
+            {
+                "module": "idna",
+                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
+            },
+            {
+                "module": "pymssql",
+                "input_file": "wheels/py39/pymssql-2.2.5-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+            },
+            {
+                "module": "requests",
+                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
+            },
+            {
+                "module": "urllib3",
+                "input_file": "wheels/shared/urllib3-1.26.12-py2.py3-none-any.whl"
             }
         ]
     }
