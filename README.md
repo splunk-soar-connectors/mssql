@@ -2,11 +2,11 @@
 # Microsoft SQL Server
 
 Publisher: Splunk  
-Connector Version: 2\.1\.7  
+Connector Version: 2\.2\.0  
 Product Vendor: Microsoft  
 Product Name: Microsoft SQL Server  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 5\.1\.0  
+Minimum Product Version: 5\.3\.3  
 
 This app supports investigative actions against a Microsoft SQL Server
 
@@ -84,14 +84,11 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 #### Action Output
 DATA PATH | TYPE | CONTAINS
 --------- | ---- | --------
-action\_result\.summary\.num\_datasets | numeric | 
-action\_result\.summary\.dataset\:0\:rows | numeric | 
-action\_result\.summary\.dataset\:0\:columns | numeric | 
 action\_result\.status | string | 
+action\_result\.parameter\.database | string |  `mssql database name` 
+action\_result\.parameter\.host | string |  `hostname`  `host` 
 action\_result\.parameter\.table\_name | string |  `mssql table name` 
 action\_result\.parameter\.table\_schema | string |  `mssql table schema` 
-action\_result\.parameter\.host | string |  `hostname`  `host` 
-action\_result\.parameter\.database | string |  `mssql database name` 
 action\_result\.data\.\*\.CHARACTER\_MAXIMUM\_LENGTH | numeric | 
 action\_result\.data\.\*\.CHARACTER\_OCTET\_LENGTH | numeric | 
 action\_result\.data\.\*\.CHARACTER\_SET\_CATALOG | string | 
@@ -100,9 +97,9 @@ action\_result\.data\.\*\.CHARACTER\_SET\_SCHEMA | string |
 action\_result\.data\.\*\.COLLATION\_CATALOG | string | 
 action\_result\.data\.\*\.COLLATION\_NAME | string | 
 action\_result\.data\.\*\.COLLATION\_SCHEMA | string | 
+action\_result\.data\.\*\.COLUMN\_DEFAULT | string | 
 action\_result\.data\.\*\.COLUMN\_NAME | string | 
 action\_result\.data\.\*\.DATA\_TYPE | string | 
-action\_result\.data\.\*\.COLUMN\_DEFAULT | string | 
 action\_result\.data\.\*\.DATETIME\_PRECISION | numeric | 
 action\_result\.data\.\*\.DOMAIN\_CATALOG | string |  `domain` 
 action\_result\.data\.\*\.DOMAIN\_NAME | string |  `domain` 
@@ -115,7 +112,10 @@ action\_result\.data\.\*\.ORDINAL\_POSITION | numeric |
 action\_result\.data\.\*\.TABLE\_CATALOG | string | 
 action\_result\.data\.\*\.TABLE\_NAME | string |  `mssql table schema` 
 action\_result\.data\.\*\.TABLE\_SCHEMA | string |  `mssql table schema` 
+action\_result\.summary\.dataset\:0\:columns | numeric | 
+action\_result\.summary\.dataset\:0\:rows | numeric | 
 action\_result\.summary\.num\_columns | numeric | 
+action\_result\.summary\.num\_datasets | numeric | 
 action\_result\.message | string | 
 summary\.total\_objects | numeric | 
 summary\.total\_objects\_successful | numeric |   
@@ -136,17 +136,17 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 #### Action Output
 DATA PATH | TYPE | CONTAINS
 --------- | ---- | --------
-action\_result\.summary\.num\_datasets | numeric | 
-action\_result\.summary\.dataset\:0\:rows | numeric | 
-action\_result\.summary\.dataset\:0\:columns | numeric | 
 action\_result\.status | string | 
-action\_result\.parameter\.table\_schema | string |  `mssql table schema` 
-action\_result\.parameter\.host | string |  `hostname`  `host` 
 action\_result\.parameter\.database | string |  `mssql database name` 
+action\_result\.parameter\.host | string |  `hostname`  `host` 
+action\_result\.parameter\.table\_schema | string |  `mssql table schema` 
 action\_result\.data\.\*\.TABLE\_CATALOG | string | 
 action\_result\.data\.\*\.TABLE\_NAME | string |  `mssql table name` 
 action\_result\.data\.\*\.TABLE\_SCHEMA | string |  `mssql table schema` 
 action\_result\.data\.\*\.TABLE\_TYPE | string | 
+action\_result\.summary\.dataset\:0\:columns | numeric | 
+action\_result\.summary\.dataset\:0\:rows | numeric | 
+action\_result\.summary\.num\_datasets | numeric | 
 action\_result\.summary\.num\_tables | numeric | 
 action\_result\.message | string | 
 summary\.total\_objects | numeric | 
@@ -176,42 +176,41 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 #### Action Output
 DATA PATH | TYPE | CONTAINS
 --------- | ---- | --------
-action\_result\.data\.\*\.dataset\.\*\.age | numeric | 
-action\_result\.data\.\*\.dataset\.\*\.bod | numeric | 
-action\_result\.data\.\*\.dataset\.\*\.name | string | 
-action\_result\.data\.\*\.dataset\.\*\.petname | string | 
-action\_result\.data\.\*\.description\.age\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.bod\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.name\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.petname\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.mydate\.type\_code | numeric | 
-action\_result\.data\.\*\.created\_at | string | 
-action\_result\.data\.\*\.float\_column | string | 
-action\_result\.data\.\*\.dataset\.\*\.created\_at | string | 
-action\_result\.data\.\*\.dataset\.\*\.float\_column | string | 
-action\_result\.data\.\*\.description\.created\_at\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.float\_column\.type\_code | numeric | 
-action\_result\.data\.\*\.\_\_name\_not\_provided\_\_0 | string | 
-action\_result\.data\.\*\.baz | string | 
-action\_result\.summary\.dataset\:0\:rows | numeric | 
-action\_result\.summary\.dataset\:0\:columns | numeric | 
-action\_result\.data\.\*\.age | numeric | 
-action\_result\.data\.\*\.bod | numeric | 
-action\_result\.data\.\*\.name | string | 
-action\_result\.data\.\*\.petname | string | 
 action\_result\.status | string | 
-action\_result\.parameter\.format\_vars | string | 
-action\_result\.parameter\.no\_commit | boolean | 
-action\_result\.parameter\.non\_query | boolean | 
+action\_result\.parameter\.add\_datasets\_as\_rows | boolean | 
+action\_result\.parameter\.database | string |  `mssql database name` 
 action\_result\.parameter\.datetime\_to\_iso8601 | boolean | 
 action\_result\.parameter\.default\_to\_string | boolean | 
-action\_result\.parameter\.add\_datasets\_as\_rows | boolean | 
+action\_result\.parameter\.format\_vars | string | 
 action\_result\.parameter\.host | string |  `hostname`  `host` 
-action\_result\.parameter\.host | string |  `hostname`  `host` 
-action\_result\.parameter\.database | string |  `mssql database name` 
-action\_result\.data\.\*\.dataset | string | 
-action\_result\.data\.\*\.description | string | 
+action\_result\.parameter\.no\_commit | boolean | 
+action\_result\.parameter\.non\_query | boolean | 
 action\_result\.parameter\.query | string |  `sql query` 
+action\_result\.data\.\*\.\_\_name\_not\_provided\_\_0 | string | 
+action\_result\.data\.\*\.age | numeric | 
+action\_result\.data\.\*\.baz | string | 
+action\_result\.data\.\*\.bod | numeric | 
+action\_result\.data\.\*\.created\_at | string | 
+action\_result\.data\.\*\.dataset | string | 
+action\_result\.data\.\*\.dataset\.\*\.age | numeric | 
+action\_result\.data\.\*\.dataset\.\*\.bod | numeric | 
+action\_result\.data\.\*\.dataset\.\*\.created\_at | string | 
+action\_result\.data\.\*\.dataset\.\*\.float\_column | string | 
+action\_result\.data\.\*\.dataset\.\*\.name | string | 
+action\_result\.data\.\*\.dataset\.\*\.petname | string | 
+action\_result\.data\.\*\.description | string | 
+action\_result\.data\.\*\.description\.age\.type\_code | numeric | 
+action\_result\.data\.\*\.description\.bod\.type\_code | numeric | 
+action\_result\.data\.\*\.description\.created\_at\.type\_code | numeric | 
+action\_result\.data\.\*\.description\.float\_column\.type\_code | numeric | 
+action\_result\.data\.\*\.description\.mydate\.type\_code | numeric | 
+action\_result\.data\.\*\.description\.name\.type\_code | numeric | 
+action\_result\.data\.\*\.description\.petname\.type\_code | numeric | 
+action\_result\.data\.\*\.float\_column | string | 
+action\_result\.data\.\*\.name | string | 
+action\_result\.data\.\*\.petname | string | 
+action\_result\.summary\.dataset\:0\:columns | numeric | 
+action\_result\.summary\.dataset\:0\:rows | numeric | 
 action\_result\.summary\.num\_datasets | numeric | 
 action\_result\.summary\.num\_rows | numeric | 
 action\_result\.message | string | 
