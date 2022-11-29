@@ -139,22 +139,22 @@ class MicrosoftSqlServerConnector(BaseConnector):
         """
 
         error_code = None
-        error_msg = MSSQLSERVER_ERROR_MESSAGE_UNAVAILABLE
+        error_message = MSSQLSERVER_ERROR_MESSAGE_UNAVAILABLE
         self.error_print("Traceback: {}".format(traceback.format_stack()))
         try:
             if hasattr(e, "args"):
                 if len(e.args) > 1:
                     error_code = e.args[0]
-                    error_msg = e.args[1]
+                    error_message = e.args[1]
                 elif len(e.args) == 1:
-                    error_msg = e.args[0]
+                    error_message = e.args[0]
         except Exception as ex:
             self._dump_error_log(ex, "Error occurred while fetching exception information")
 
         if not error_code:
-            error_text = "Error Message: {}".format(error_msg)
+            error_text = "Error Message: {}".format(error_message)
         else:
-            error_text = "Error Code: {}. Error Message: {}".format(error_code, error_msg)
+            error_text = "Error Code: {}. Error Message: {}".format(error_code, error_message)
 
         return error_text
 
