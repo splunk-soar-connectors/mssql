@@ -19,10 +19,12 @@ import binascii
 import csv
 import datetime
 import json
+import struct
 import traceback
 
 import phantom.app as phantom
 import requests
+from dateutil.tz import tzoffset
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
@@ -63,6 +65,22 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 row[0] = name + str(i)
         return description
 
+    def _bytes_to_date(self, binary_str):
+        unpacked = struct.unpack('QIhH', binary_str)
+        m = []
+        for tup in unpacked:
+            m.append(tup)
+
+        days = m[1]
+        microseconds = m[0] / 10 if m[0] else 0
+
+        timezone = m[2]
+        tz = tzoffset('ANY', timezone * 60  )
+        date = datetime.datetime(*[1900, 1, 1, 0, 0, 0], tzinfo=tz)
+        td = datetime.timedelta(days=days, minutes=m[2], microseconds=microseconds)
+        date += td
+        return date
+
     def _remediate_dataset_value(self, dataset, description):
         dataset = [list(row) for row in dataset]
         for row in dataset:
@@ -71,15 +89,19 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 # col_name = description[i][0]
                 col_type = description[i][1]
 
-                if col_type == 2 and value is not None:
-                    row[i] = '0x{0}'.format(binascii.hexlify(value).decode().upper())
-
                 # convert dates to iso8601
-                if self._datetime_to_iso8601 and isinstance(value, datetime.datetime):
+                if self._datetime_to_iso8601 and isinstance(value, (datetime.datetime, datetime.date)):
                     row[i] = value.isoformat()
 
+                elif col_type == 2 and value is not None and isinstance(value, bytes):
+                    try:
+                        date_from_byte = self._bytes_to_date(value)
+                        row[i] = str(date_from_byte)
+                    except:
+                        row[i] = '0x{0}'.format(binascii.hexlify(value).decode().upper())
+
                 # catchall for oddball column types
-                if self._default_to_string and not (isinstance(value, str) or isinstance(value, int) or isinstance(value, float)):
+                elif self._default_to_string and not (isinstance(value, str) or isinstance(value, int) or isinstance(value, float)):
                     row[i] = str(value)
 
         return dataset
