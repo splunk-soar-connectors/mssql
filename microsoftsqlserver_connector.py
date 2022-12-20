@@ -14,7 +14,6 @@
 # and limitations under the License.
 #
 #
-# Phantom App imports
 import binascii
 import csv
 import datetime
@@ -23,14 +22,14 @@ import struct
 import traceback
 
 import phantom.app as phantom
+import pymssql
 import requests
 from dateutil.tz import tzoffset
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
-
-import pymssql
-from microsoftsqlserver_consts import *
 from pymssql import OperationalError
+
+from microsoftsqlserver_consts import *
 
 
 class RetVal(tuple):
@@ -75,7 +74,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
         microseconds = m[0] / 10 if m[0] else 0
 
         timezone = m[2]
-        tz = tzoffset('ANY', timezone * 60  )
+        tz = tzoffset('ANY', timezone * 60)
         date = datetime.datetime(*[1900, 1, 1, 0, 0, 0], tzinfo=tz)
         td = datetime.timedelta(days=days, minutes=m[2], microseconds=microseconds)
         date += td
@@ -86,7 +85,6 @@ class MicrosoftSqlServerConnector(BaseConnector):
         for row in dataset:
             for i, value in enumerate(row):
 
-                # col_name = description[i][0]
                 col_type = description[i][1]
 
                 # convert dates to iso8601
@@ -98,6 +96,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
                         date_from_byte = self._bytes_to_date(value)
                         row[i] = str(date_from_byte)
                     except:
+                        self.debug_print("Binary Data")
                         row[i] = '0x{0}'.format(binascii.hexlify(value).decode().upper())
 
                 # catchall for oddball column types
@@ -306,7 +305,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
     def _handle_list_tables(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
-        dbname = param['database']
+        dbname = param.get('database')
         table_schema = param.get('table_schema')
 
         query = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = %s AND TABLE_CATALOG = %s"
@@ -341,9 +340,9 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
     def _handle_run_query(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-        self._default_to_string = param.get("default_to_string", False)
+        self._default_to_string = param.get("default_to_string", True)
         self._datetime_to_iso8601 = param.get("datetime_to_iso8601", False)
-        self._add_datasets_as_rows = param.get('add_datasets_as_rows', self._add_datasets_as_rows)
+        self._add_datasets_as_rows = param.get('add_datasets_as_rows', False)
 
         action_result = self.add_action_result(ActionResult(dict(param)))
         query = param['query']
@@ -357,7 +356,6 @@ class MicrosoftSqlServerConnector(BaseConnector):
             else:
                 self._cursor.execute(query, format_vars)
         except Exception as ex:
-            self.error_print("Error running query")
             return action_result.set_status(
                 phantom.APP_ERROR, "Error running query", self._get_error_message_from_exception(ex)
             )
@@ -418,7 +416,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
         return ret_val
 
     def _connect_sql(self, param):
-        self._default_to_string = False
+        self._default_to_string = True
         self._datetime_to_iso8601 = False
         self._add_datasets_as_rows = False
         self._state = self.load_state()
