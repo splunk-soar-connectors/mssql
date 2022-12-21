@@ -350,6 +350,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
         non_query = param.get('non_query', False)
 
         try:
+            self.debug_print("Executing run query")
             if non_query:
                 self._connection._conn.execute_non_query('ROLLBACK TRAN')
                 self._connection._conn.execute_non_query(query, format_vars)
