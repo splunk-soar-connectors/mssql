@@ -1,1 +1,2 @@
 **Unreleased**
+* Resolved run query issues showing bytes in date field [PAPP-28336]
