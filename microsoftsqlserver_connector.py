@@ -14,21 +14,22 @@
 # and limitations under the License.
 #
 #
-# Phantom App imports
 import binascii
 import csv
 import datetime
 import json
+import struct
 import traceback
 
 import phantom.app as phantom
+import pymssql
 import requests
+from dateutil.tz import tzoffset
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
-
-import pymssql
-from microsoftsqlserver_consts import *
 from pymssql import OperationalError
+
+from microsoftsqlserver_consts import *
 
 
 class RetVal(tuple):
@@ -63,23 +64,43 @@ class MicrosoftSqlServerConnector(BaseConnector):
                 row[0] = name + str(i)
         return description
 
+    def _bytes_to_date(self, binary_str):
+        unpacked = struct.unpack('QIhH', binary_str)
+        m = []
+        for tup in unpacked:
+            m.append(tup)
+
+        days = m[1]
+        microseconds = m[0] / 10 if m[0] else 0
+
+        timezone = m[2]
+        tz = tzoffset('ANY', timezone * 60)
+        date = datetime.datetime(*[1900, 1, 1, 0, 0, 0], tzinfo=tz)
+        td = datetime.timedelta(days=days, minutes=m[2], microseconds=microseconds)
+        date += td
+        return date
+
     def _remediate_dataset_value(self, dataset, description):
         dataset = [list(row) for row in dataset]
         for row in dataset:
             for i, value in enumerate(row):
 
-                # col_name = description[i][0]
                 col_type = description[i][1]
 
-                if col_type == 2 and value is not None:
-                    row[i] = '0x{0}'.format(binascii.hexlify(value).decode().upper())
-
                 # convert dates to iso8601
-                if self._datetime_to_iso8601 and isinstance(value, datetime.datetime):
+                if self._datetime_to_iso8601 and isinstance(value, (datetime.datetime, datetime.date)):
                     row[i] = value.isoformat()
 
+                elif col_type == 2 and value is not None and isinstance(value, bytes):
+                    try:
+                        date_from_byte = self._bytes_to_date(value)
+                        row[i] = str(date_from_byte)
+                    except:
+                        self.debug_print("Binary Data")
+                        row[i] = '0x{0}'.format(binascii.hexlify(value).decode().upper())
+
                 # catchall for oddball column types
-                if self._default_to_string and not (isinstance(value, str) or isinstance(value, int) or isinstance(value, float)):
+                elif self._default_to_string and not (isinstance(value, str) or isinstance(value, int) or isinstance(value, float)):
                     row[i] = str(value)
 
         return dataset
@@ -117,22 +138,22 @@ class MicrosoftSqlServerConnector(BaseConnector):
         """
 
         error_code = None
-        error_msg = MSSQLSERVER_ERROR_MESSAGE_UNAVAILABLE
+        error_message = MSSQLSERVER_ERROR_MESSAGE_UNAVAILABLE
         self.error_print("Traceback: {}".format(traceback.format_stack()))
         try:
             if hasattr(e, "args"):
                 if len(e.args) > 1:
                     error_code = e.args[0]
-                    error_msg = e.args[1]
+                    error_message = e.args[1]
                 elif len(e.args) == 1:
-                    error_msg = e.args[0]
+                    error_message = e.args[0]
         except Exception as ex:
             self._dump_error_log(ex, "Error occurred while fetching exception information")
 
         if not error_code:
-            error_text = "Error Message: {}".format(error_msg)
+            error_text = "Error Message: {}".format(error_message)
         else:
-            error_text = "Error Code: {}. Error Message: {}".format(error_code, error_msg)
+            error_text = "Error Code: {}. Error Message: {}".format(error_code, error_message)
 
         return error_text
 
@@ -284,7 +305,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
     def _handle_list_tables(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         action_result = self.add_action_result(ActionResult(dict(param)))
-        dbname = param['database']
+        dbname = param.get('database')
         table_schema = param.get('table_schema')
 
         query = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = %s AND TABLE_CATALOG = %s"
@@ -319,9 +340,9 @@ class MicrosoftSqlServerConnector(BaseConnector):
 
     def _handle_run_query(self, param):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
-        self._default_to_string = param.get("default_to_string", False)
+        self._default_to_string = param.get("default_to_string", True)
         self._datetime_to_iso8601 = param.get("datetime_to_iso8601", False)
-        self._add_datasets_as_rows = param.get('add_datasets_as_rows', self._add_datasets_as_rows)
+        self._add_datasets_as_rows = param.get('add_datasets_as_rows', False)
 
         action_result = self.add_action_result(ActionResult(dict(param)))
         query = param['query']
@@ -329,13 +350,13 @@ class MicrosoftSqlServerConnector(BaseConnector):
         non_query = param.get('non_query', False)
 
         try:
+            self.debug_print("Executing run query")
             if non_query:
                 self._connection._conn.execute_non_query('ROLLBACK TRAN')
                 self._connection._conn.execute_non_query(query, format_vars)
             else:
                 self._cursor.execute(query, format_vars)
         except Exception as ex:
-            self.error_print("Error running query")
             return action_result.set_status(
                 phantom.APP_ERROR, "Error running query", self._get_error_message_from_exception(ex)
             )
@@ -396,7 +417,7 @@ class MicrosoftSqlServerConnector(BaseConnector):
         return ret_val
 
     def _connect_sql(self, param):
-        self._default_to_string = False
+        self._default_to_string = True
         self._datetime_to_iso8601 = False
         self._add_datasets_as_rows = False
         self._state = self.load_state()
