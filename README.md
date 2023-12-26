@@ -2,16 +2,16 @@
 # Microsoft SQL Server
 
 Publisher: Splunk  
-Connector Version: 2\.3\.0  
+Connector Version: 2.3.1  
 Product Vendor: Microsoft  
 Product Name: Microsoft SQL Server  
-Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 5\.3\.5  
+Product Version Supported (regex): ".\*"  
+Minimum Product Version: 5.3.5  
 
 This app supports investigative actions against a Microsoft SQL Server
 
 [comment]: # " File: README.md"
-[comment]: # "  Copyright (c) 2017-2022 Splunk Inc."
+[comment]: # "  Copyright (c) 2017-2023 Splunk Inc."
 [comment]: # ""
 [comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
 [comment]: # "you may not use this file except in compliance with the License."
@@ -76,49 +76,49 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**table\_name** |  required  | Table Name | string |  `mssql table name` 
-**table\_schema** |  optional  | Table Schema | string |  `mssql table schema` 
+**table_name** |  required  | Table Name | string |  `mssql table name` 
+**table_schema** |  optional  | Table Schema | string |  `mssql table schema` 
 **host** |  optional  | Optional database hostname or ip address | string |  `hostname`  `host` 
 **database** |  optional  | Optional database name | string |  `mssql database name` 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.status | string | 
-action\_result\.parameter\.database | string |  `mssql database name` 
-action\_result\.parameter\.host | string |  `hostname`  `host` 
-action\_result\.parameter\.table\_name | string |  `mssql table name` 
-action\_result\.parameter\.table\_schema | string |  `mssql table schema` 
-action\_result\.data\.\*\.CHARACTER\_MAXIMUM\_LENGTH | numeric | 
-action\_result\.data\.\*\.CHARACTER\_OCTET\_LENGTH | numeric | 
-action\_result\.data\.\*\.CHARACTER\_SET\_CATALOG | string | 
-action\_result\.data\.\*\.CHARACTER\_SET\_NAME | string | 
-action\_result\.data\.\*\.CHARACTER\_SET\_SCHEMA | string | 
-action\_result\.data\.\*\.COLLATION\_CATALOG | string | 
-action\_result\.data\.\*\.COLLATION\_NAME | string | 
-action\_result\.data\.\*\.COLLATION\_SCHEMA | string | 
-action\_result\.data\.\*\.COLUMN\_DEFAULT | string | 
-action\_result\.data\.\*\.COLUMN\_NAME | string | 
-action\_result\.data\.\*\.DATA\_TYPE | string | 
-action\_result\.data\.\*\.DATETIME\_PRECISION | numeric | 
-action\_result\.data\.\*\.DOMAIN\_CATALOG | string |  `domain` 
-action\_result\.data\.\*\.DOMAIN\_NAME | string |  `domain` 
-action\_result\.data\.\*\.DOMAIN\_SCHEMA | string |  `domain` 
-action\_result\.data\.\*\.IS\_NULLABLE | string | 
-action\_result\.data\.\*\.NUMERIC\_PRECISION | numeric | 
-action\_result\.data\.\*\.NUMERIC\_PRECISION\_RADIX | numeric | 
-action\_result\.data\.\*\.NUMERIC\_SCALE | numeric | 
-action\_result\.data\.\*\.ORDINAL\_POSITION | numeric | 
-action\_result\.data\.\*\.TABLE\_CATALOG | string | 
-action\_result\.data\.\*\.TABLE\_NAME | string |  `mssql table schema` 
-action\_result\.data\.\*\.TABLE\_SCHEMA | string |  `mssql table schema` 
-action\_result\.summary\.dataset\:0\:columns | numeric | 
-action\_result\.summary\.dataset\:0\:rows | numeric | 
-action\_result\.summary\.num\_columns | numeric | 
-action\_result\.summary\.num\_datasets | numeric | 
-action\_result\.message | string | 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
+action_result.parameter.database | string |  `mssql database name`  |   testdb 
+action_result.parameter.host | string |  `hostname`  `host`  |   8.8.8.8 
+action_result.parameter.table_name | string |  `mssql table name`  |   TestTable 
+action_result.parameter.table_schema | string |  `mssql table schema`  |   testbo 
+action_result.data.\*.CHARACTER_MAXIMUM_LENGTH | numeric |  |   10 
+action_result.data.\*.CHARACTER_OCTET_LENGTH | numeric |  |   10 
+action_result.data.\*.CHARACTER_SET_CATALOG | string |  |  
+action_result.data.\*.CHARACTER_SET_NAME | string |  |   iso_1 
+action_result.data.\*.CHARACTER_SET_SCHEMA | string |  |  
+action_result.data.\*.COLLATION_CATALOG | string |  |  
+action_result.data.\*.COLLATION_NAME | string |  |   SQL_Latin1_General_AS 
+action_result.data.\*.COLLATION_SCHEMA | string |  |  
+action_result.data.\*.COLUMN_DEFAULT | string |  |  
+action_result.data.\*.COLUMN_NAME | string |  |   col1 
+action_result.data.\*.DATA_TYPE | string |  |   char 
+action_result.data.\*.DATETIME_PRECISION | numeric |  |  
+action_result.data.\*.DOMAIN_CATALOG | string |  `domain`  |  
+action_result.data.\*.DOMAIN_NAME | string |  `domain`  |  
+action_result.data.\*.DOMAIN_SCHEMA | string |  `domain`  |  
+action_result.data.\*.IS_NULLABLE | string |  |   NO  YES 
+action_result.data.\*.NUMERIC_PRECISION | numeric |  |  
+action_result.data.\*.NUMERIC_PRECISION_RADIX | numeric |  |  
+action_result.data.\*.NUMERIC_SCALE | numeric |  |  
+action_result.data.\*.ORDINAL_POSITION | numeric |  |   1 
+action_result.data.\*.TABLE_CATALOG | string |  |   testdb 
+action_result.data.\*.TABLE_NAME | string |  `mssql table schema`  |   TestTable 
+action_result.data.\*.TABLE_SCHEMA | string |  `mssql table schema`  |   testbo 
+action_result.summary.dataset:0:columns | numeric |  |   23 
+action_result.summary.dataset:0:rows | numeric |  |   1 
+action_result.summary.num_columns | numeric |  |   4 
+action_result.summary.num_datasets | numeric |  |   1 
+action_result.message | string |  |   Successfully listed columns 
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'list tables'
 List all the tables in the database
@@ -129,28 +129,28 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**table\_schema** |  optional  | Table Schema | string |  `mssql table schema` 
+**table_schema** |  optional  | Table Schema | string |  `mssql table schema` 
 **host** |  optional  | Optional database hostname or ip address | string |  `hostname`  `host` 
 **database** |  optional  | Optional database name | string |  `mssql database name` 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.status | string | 
-action\_result\.parameter\.database | string |  `mssql database name` 
-action\_result\.parameter\.host | string |  `hostname`  `host` 
-action\_result\.parameter\.table\_schema | string |  `mssql table schema` 
-action\_result\.data\.\*\.TABLE\_CATALOG | string | 
-action\_result\.data\.\*\.TABLE\_NAME | string |  `mssql table name` 
-action\_result\.data\.\*\.TABLE\_SCHEMA | string |  `mssql table schema` 
-action\_result\.data\.\*\.TABLE\_TYPE | string | 
-action\_result\.summary\.dataset\:0\:columns | numeric | 
-action\_result\.summary\.dataset\:0\:rows | numeric | 
-action\_result\.summary\.num\_datasets | numeric | 
-action\_result\.summary\.num\_tables | numeric | 
-action\_result\.message | string | 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
+action_result.parameter.database | string |  `mssql database name`  |   testdb 
+action_result.parameter.host | string |  `hostname`  `host`  |  
+action_result.parameter.table_schema | string |  `mssql table schema`  |   testbo 
+action_result.data.\*.TABLE_CATALOG | string |  |   testdb 
+action_result.data.\*.TABLE_NAME | string |  `mssql table name`  |   TestTable 
+action_result.data.\*.TABLE_SCHEMA | string |  `mssql table schema`  |   testbo 
+action_result.data.\*.TABLE_TYPE | string |  |   TEST TABLE 
+action_result.summary.dataset:0:columns | numeric |  |   4 
+action_result.summary.dataset:0:rows | numeric |  |   1 
+action_result.summary.num_datasets | numeric |  |   1 
+action_result.summary.num_tables | numeric |  |   4 
+action_result.message | string |  |   Successfully listed tables 
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'run query'
 Run a query against a table or tables in the database
@@ -158,61 +158,63 @@ Run a query against a table or tables in the database
 Type: **investigate**  
 Read only: **False**
 
-It is recommended to use the <b>format\_vars</b> parameter when applicable\. For example, if you wanted to find a specific IP, you could set <b>query</b> to a formatted string, like "select \* from my\_hosts where ip = %s" \(note the use of %s\), and set <b>format\_vars</b> to the IP address\. This will ensure the inputs are safely sanitized and avoid SQL injection attacks\. Regardless of the type of input it's expecting, the only format specifier which should be used is %s\.<br>Setting <b>no\_commit</b> will make it so the App does not commit any changes made to the database \(so you can ensure it's a read only query\)\.<br><br>The <b>format\_vars</b> parameter accepts a comma seperated list\. You can escape commas by surrounding them in double quotes, and escape double quotes with a backslash\. Assuming you have a list of values for the format vars, you can employ this code in your playbooks to properly format it into a string\:<br> <code>format\_vars\_str = ','\.join\(\['"\{\}"'\.format\(str\(x\)\.replace\('\\\\', '\\\\\\\\'\)\.replace\('"', '\\\\"'\)\) for x in format\_vars\_list\]\)</code>
+It is recommended to use the <b>format_vars</b> parameter when applicable. For example, if you wanted to find a specific IP, you could set <b>query</b> to a formatted string, like "select \* from my_hosts where ip = %s" (note the use of %s), and set <b>format_vars</b> to the IP address. This will ensure the inputs are safely sanitized and avoid SQL injection attacks. Regardless of the type of input it's expecting, the only format specifier which should be used is %s.<br>Setting <b>no_commit</b> will make it so the App does not commit any changes made to the database (so you can ensure it's a read only query).<br><br>The <b>format_vars</b> parameter accepts a comma seperated list. You can escape commas by surrounding them in double quotes, and escape double quotes with a backslash. Assuming you have a list of values for the format vars, you can employ this code in your playbooks to properly format it into a string:<br> <code>format_vars_str = ','.join(['"{}"'.format(str(x).replace('\\\\', '\\\\\\\\').replace('"', '\\\\"')) for x in format_vars_list])</code>
 
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **query** |  required  | Query string | string |  `sql query` 
-**format\_vars** |  optional  | Comma separated list of variables | string | 
-**no\_commit** |  optional  | Do not commit changes to the Database | boolean | 
-**non\_query** |  optional  | Do not run this command in a transaction | boolean | 
-**datetime\_to\_iso8601** |  optional  | Convert column types of datetime to iso8601 | boolean | 
-**default\_to\_string** |  optional  | Convert any non\-standard column types to string; ie\. datetime | boolean | 
-**add\_datasets\_as\_rows** |  optional  | Run query will return each dataset as a separate row in the action result | boolean | 
+**format_vars** |  optional  | Comma separated list of variables | string | 
+**no_commit** |  optional  | Do not commit changes to the Database | boolean | 
+**non_query** |  optional  | Do not run this command in a transaction | boolean | 
+**datetime_to_iso8601** |  optional  | Convert column types of datetime to iso8601 | boolean | 
+**default_to_string** |  optional  | Convert any non-standard column types to string; ie. datetime | boolean | 
+**add_datasets_as_rows** |  optional  | Run query will return each dataset as a separate row in the action result | boolean | 
 **host** |  optional  | Optional database hostname or ip address | string |  `hostname`  `host` 
 **database** |  optional  | Optional database name | string |  `mssql database name` 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.status | string | 
-action\_result\.parameter\.add\_datasets\_as\_rows | boolean | 
-action\_result\.parameter\.database | string |  `mssql database name` 
-action\_result\.parameter\.datetime\_to\_iso8601 | boolean | 
-action\_result\.parameter\.default\_to\_string | boolean | 
-action\_result\.parameter\.format\_vars | string | 
-action\_result\.parameter\.host | string |  `hostname`  `host` 
-action\_result\.parameter\.no\_commit | boolean | 
-action\_result\.parameter\.non\_query | boolean | 
-action\_result\.parameter\.query | string |  `sql query` 
-action\_result\.data\.\*\.\_\_name\_not\_provided\_\_0 | string | 
-action\_result\.data\.\*\.age | numeric | 
-action\_result\.data\.\*\.baz | string | 
-action\_result\.data\.\*\.bod | numeric | 
-action\_result\.data\.\*\.created\_at | string | 
-action\_result\.data\.\*\.dataset | string | 
-action\_result\.data\.\*\.dataset\.\*\.age | numeric | 
-action\_result\.data\.\*\.dataset\.\*\.bod | numeric | 
-action\_result\.data\.\*\.dataset\.\*\.created\_at | string | 
-action\_result\.data\.\*\.dataset\.\*\.float\_column | string | 
-action\_result\.data\.\*\.dataset\.\*\.name | string | 
-action\_result\.data\.\*\.dataset\.\*\.petname | string | 
-action\_result\.data\.\*\.description | string | 
-action\_result\.data\.\*\.description\.age\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.bod\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.created\_at\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.float\_column\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.mydate\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.name\.type\_code | numeric | 
-action\_result\.data\.\*\.description\.petname\.type\_code | numeric | 
-action\_result\.data\.\*\.float\_column | string | 
-action\_result\.data\.\*\.name | string | 
-action\_result\.data\.\*\.petname | string | 
-action\_result\.summary\.dataset\:0\:columns | numeric | 
-action\_result\.summary\.dataset\:0\:rows | numeric | 
-action\_result\.summary\.num\_datasets | numeric | 
-action\_result\.summary\.num\_rows | numeric | 
-action\_result\.message | string | 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric | 
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
+action_result.parameter.add_datasets_as_rows | boolean |  |   False 
+action_result.parameter.database | string |  `mssql database name`  |   testdb 
+action_result.parameter.datetime_to_iso8601 | boolean |  |   False 
+action_result.parameter.default_to_string | boolean |  |   False 
+action_result.parameter.format_vars | string |  |  
+action_result.parameter.host | string |  `hostname`  `host`  |   8.8.8.8 
+action_result.parameter.no_commit | boolean |  |   False  True 
+action_result.parameter.non_query | boolean |  |   False 
+action_result.parameter.query | string |  `sql query`  |   select \* from dbo.TestTable 
+action_result.data.\*.__name_not_provided__0 | string |  |  
+action_result.data.\*.age | numeric |  |   10 
+action_result.data.\*.baz | string |  |   comma, comma, quote \\" end quote \\" test,  
+action_result.data.\*.bod | numeric |  |   20 
+action_result.data.\*.created_at | string |  |   2020-12-23 15:23:44 
+action_result.data.\*.dataset | string |  |  
+action_result.data.\*.dataset.\*.age | numeric |  |   10 
+action_result.data.\*.dataset.\*.bod | numeric |  |   20 
+action_result.data.\*.dataset.\*.created_at | string |  |   2020-12-23 15:23:44 
+action_result.data.\*.dataset.\*.float_column | string |  |   3.4000 
+action_result.data.\*.dataset.\*.name | string |  |   runbook 
+action_result.data.\*.dataset.\*.petname | string |  |   "runbook"
+ 
+action_result.data.\*.description | string |  |  
+action_result.data.\*.description.age.type_code | numeric |  |   3 
+action_result.data.\*.description.bod.type_code | numeric |  |   3 
+action_result.data.\*.description.created_at.type_code | numeric |  |   4 
+action_result.data.\*.description.float_column.type_code | numeric |  |   5 
+action_result.data.\*.description.mydate.type_code | numeric |  |   4 
+action_result.data.\*.description.name.type_code | numeric |  |   1 
+action_result.data.\*.description.petname.type_code | numeric |  |   1 
+action_result.data.\*.float_column | string |  |   3.4000 
+action_result.data.\*.name | string |  |   runbook 
+action_result.data.\*.petname | string |  |   "runbook"
+ 
+action_result.summary.dataset:0:columns | numeric |  |   1 
+action_result.summary.dataset:0:rows | numeric |  |   1 
+action_result.summary.num_datasets | numeric |  |   1 
+action_result.summary.num_rows | numeric |  |   6 
+action_result.message | string |  |   Successfully ran query 
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1 
