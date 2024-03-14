@@ -1,1 +1,3 @@
 **Unreleased**
+* Upgraded pymssql to 2.2.11
+* Added RHEL FIPS issues workaround info to README
