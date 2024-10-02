@@ -2,11 +2,11 @@
 # Microsoft SQL Server
 
 Publisher: Splunk  
-Connector Version: 2.3.2  
+Connector Version: 2.3.3  
 Product Vendor: Microsoft  
 Product Name: Microsoft SQL Server  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.1.1  
+Minimum Product Version: 6.2.1  
 
 This app supports investigative actions against a Microsoft SQL Server
 

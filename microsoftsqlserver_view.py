@@ -19,30 +19,28 @@ import json
 
 
 def display_query_results(provides, all_results, context):
-    context['results'] = results = []
+    context["results"] = results = []
     for summary, action_results in all_results:
         for result in action_results:
+            ctx_result = {"param": result.get_param()}
 
-            ctx_result = {}
-            ctx_result['param'] = result.get_param()
-
-            add_datasets_as_rows = ctx_result['param'].get('add_datasets_as_rows', False)
+            add_datasets_as_rows = ctx_result["param"].get("add_datasets_as_rows", False)
             # ctx_result['add_datasets_as_rows'] = add_datasets_as_rows
             # ctx_result['description_headers'] = ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"]
 
-            data = reformat_data(result.get_data(),
-                                 ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"],
-                                 add_datasets_as_rows)
+            data = reformat_data(
+                result.get_data(), ["name", "type_code", "display_size", "internal_size", "precision", "scale", "null_ok"], add_datasets_as_rows
+            )
 
-            if (data):
-                ctx_result['tables'] = data
+            if data:
+                ctx_result["tables"] = data
 
             # ctx_result['headers'] = data[0]['headers']
             # ctx_result['rows'] = data[0]['rows']
 
             summary = result.get_summary()
-            if (summary):
-                ctx_result['summary'] = summary
+            if summary:
+                ctx_result["summary"] = summary
 
             results.append(ctx_result)
 
@@ -59,30 +57,30 @@ def reformat_data(data, description_headers, add_datasets_as_rows):
 
             newdataset = {}
             ret += [newdataset]
-            newdataset['index'] = index
-            newdataset['headers'] = sorted(dataset['dataset'][0].keys())
-            newdataset['dataset'] = []
+            newdataset["index"] = index
+            newdataset["headers"] = sorted(dataset["dataset"][0].keys())
+            newdataset["dataset"] = []
 
-            for row in dataset['dataset']:
+            for row in dataset["dataset"]:
 
                 newrow = []
-                newdataset['dataset'] += [newrow]
+                newdataset["dataset"] += [newrow]
 
-                for col in newdataset['headers']:
+                for col in newdataset["headers"]:
                     newrow += [row[col]]
 
-            newdataset['description'] = []
-            for name in sorted(dataset['description'].keys()):
+            newdataset["description"] = []
+            for name in sorted(dataset["description"].keys()):
 
                 newrow = []
-                newdataset['description'] += [newrow]
+                newdataset["description"] += [newrow]
                 newrow += [name]
 
                 for i, col in enumerate(description_headers):
                     if i:
-                        newrow += [dataset['description'][name].get(col, "")]
+                        newrow += [dataset["description"][name].get(col, "")]
 
-            newdataset['dump'] = json.dumps(newdataset)
+            newdataset["dump"] = json.dumps(newdataset)
 
     else:
 
@@ -96,38 +94,38 @@ def reformat_data(data, description_headers, add_datasets_as_rows):
                 headers = newheaders
                 newdataset = {}
                 ret += [newdataset]
-                newdataset['index'] = index
+                newdataset["index"] = index
                 index += 1
-                newdataset['headers'] = sorted(row.keys())
-                newdataset['dataset'] = []
+                newdataset["headers"] = sorted(row.keys())
+                newdataset["dataset"] = []
 
             newrow = []
-            newdataset['dataset'] += [newrow]
+            newdataset["dataset"] += [newrow]
             for col in headers:
                 newrow += [row[col]]
 
-            newdataset['dump'] = json.dumps(newdataset)
+            newdataset["dump"] = json.dumps(newdataset)
 
     newret = []
     for i, dataset in enumerate(ret):
 
-        if 'description' in dataset:
+        if "description" in dataset:
             newdataset = {}
             newret += [newdataset]
-            newdataset['name'] = "Description for Dataset #" + str(i)
-            newdataset['headers'] = description_headers
-            newdataset['rows'] = dataset['description']
-            for r, row in enumerate(newdataset['rows']):
+            newdataset["name"] = "Description for Dataset #" + str(i)
+            newdataset["headers"] = description_headers
+            newdataset["rows"] = dataset["description"]
+            for r, row in enumerate(newdataset["rows"]):
                 for c, cell in enumerate(row):
-                    newdataset['rows'][r][c] = { "value": cell }
+                    newdataset["rows"][r][c] = {"value": cell}
 
         newdataset = {}
         newret += [newdataset]
-        newdataset['name'] = "Dataset #" + str(i)
-        newdataset['headers'] = dataset['headers']
-        newdataset['rows'] = dataset['dataset']
-        for r, row in enumerate(newdataset['rows']):
+        newdataset["name"] = "Dataset #" + str(i)
+        newdataset["headers"] = dataset["headers"]
+        newdataset["rows"] = dataset["dataset"]
+        for r, row in enumerate(newdataset["rows"]):
             for c, cell in enumerate(row):
-                newdataset['rows'][r][c] = { "value": cell }
+                newdataset["rows"][r][c] = {"value": cell}
 
     return newret
