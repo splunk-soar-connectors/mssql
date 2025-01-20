@@ -9,12 +9,12 @@
     "product_name": "Microsoft SQL Server",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2017-2024 Splunk Inc.",
-    "app_version": "2.3.3",
-    "utctime_updated": "2024-10-02T12:03:10.000000Z",
+    "license": "Copyright (c) 2017-2025 Splunk Inc.",
+    "app_version": "2.3.4",
+    "utctime_updated": "2025-01-20T08:49:35.000000Z",
     "package_name": "phantom_microsoftsqlserver",
     "main_module": "microsoftsqlserver_connector.py",
-    "min_phantom_version": "6.2.1",
+    "min_phantom_version": "6.3.0",
     "app_wizard_version": "1.0.0",
     "python_version": "3",
     "fips_compliant": true,
@@ -890,19 +890,11 @@
             "versions": "EQ(*)"
         }
     ],
-    "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "pymssql",
-                "input_file": "wheels/py36/pymssql-2.2.11-cp36-cp36m-manylinux_2_28_x86_64.whl"
-            }
-        ]
-    },
     "pip39_dependencies": {
         "wheel": [
             {
                 "module": "pymssql",
-                "input_file": "wheels/py39/pymssql-2.2.11-cp39-cp39-manylinux_2_28_x86_64.whl"
+                "input_file": "wheels/py39/pymssql-2.3.2-cp39-cp39-manylinux_2_28_x86_64.whl"
             }
         ]
     }

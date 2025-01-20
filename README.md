@@ -2,11 +2,11 @@
 # Microsoft SQL Server
 
 Publisher: Splunk  
-Connector Version: 2.3.3  
+Connector Version: 2.3.4  
 Product Vendor: Microsoft  
 Product Name: Microsoft SQL Server  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.2.1  
+Minimum Product Version: 6.3.0  
 
 This app supports investigative actions against a Microsoft SQL Server
 
@@ -43,8 +43,8 @@ You might have to follow the instructions [here](https://access.redhat.com/solut
 and remove pymssql dependency found in <path_to_phantom>/apps/microsoftsqlserver_*/dependencies 
 on your instance or downgrade to an earlier version to use this connector on RHEL system with FIPS enabled
 
-### Configuration Variables
-The below configuration variables are required for this Connector to operate.  These variables are specified when configuring a Microsoft SQL Server asset in SOAR.
+### Configuration variables
+This table lists the configuration variables required to operate Microsoft SQL Server. These variables are specified when configuring a Microsoft SQL Server asset in Splunk SOAR.
 
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
