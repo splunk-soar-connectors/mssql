@@ -1,3 +1,1 @@
 **Unreleased**
-
-* PSAAS-21321 update pymssql to latest version

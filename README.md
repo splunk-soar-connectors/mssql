@@ -2,7 +2,7 @@
 # Microsoft SQL Server
 
 Publisher: Splunk  
-Connector Version: 2.3.3  
+Connector Version: 2.3.4  
 Product Vendor: Microsoft  
 Product Name: Microsoft SQL Server  
 Product Version Supported (regex): ".\*"  
